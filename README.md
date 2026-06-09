@@ -1,5 +1,5 @@
 - use `ls -a` to display hidden files (such as .git, .gitignore)
-- git is ignoring raw data files (data/)
+- git is ignoring large files such as raw data (data/) and .RData files
 - code assumes your working directory is set to project root
 
 ### Directory structure
