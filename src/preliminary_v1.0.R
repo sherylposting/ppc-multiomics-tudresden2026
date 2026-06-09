@@ -14,7 +14,7 @@ if (file.exists("code/methylKit_preliminary.RData")) {
   
   # load bismark .cov file names from folder -------------------------------------
   
-  file.list <- as.list(list.files("EM_seq_files", pattern = "\\.cov.gz$", full.names = TRUE)) # name list of all .cov files in folder
+  file.list <- as.list(list.files("data/EM_seq_files", pattern = "\\.cov.gz$", full.names = TRUE)) # name list of all .cov files in folder
   
   sample.names <- list("L188015_WT1","L188016_WT2","L188017_WT3","L188018_WT4","L188019_WT5","L188020_WT6","L188021_WT7","L188022_KO1","L188023_KO2","L188024_KO3","L188025_KO4","L188026_KO5")
   
@@ -40,16 +40,30 @@ if (file.exists("code/methylKit_preliminary.RData")) {
   meth <- unite(myobj, destrand=FALSE)
   
   # correlation matrix
-  corr <- as.matrix(read.table('EM_seq_files/corr.txt'))
+  corr <- as.matrix(read.table("data/EM_seq_files/corr.txt")) # already done in previous run... for some reason the methylkit function doesn't return the object so i saved it as a .txt file
   
   # pca
   pca <- PCASamples(meth, obj.return=TRUE)
   
   # save workspace objects for easy loading later ------------------------------------------
   
-  save.image(file = "methylKit_preliminary.RData")
+  save.image(file = "code/methylKit_preliminary.RData")
 
 }
+
+myDiff=calculateDiffMeth(meth)
+
+# get hyper methylated bases
+myDiff25p.hyper=getMethylDiff(myDiff,difference=25,qvalue=0.01,type="hyper")
+
+# get hypo methylated bases
+myDiff25p.hypo=getMethylDiff(myDiff,difference=25,qvalue=0.01,type="hypo")
+
+# get all differentially methylated bases
+myDiff25p=getMethylDiff(myDiff,difference=25,qvalue=0.01)
+
+diffMethPerChr(myDiff,plot=FALSE,qvalue.cutoff=0.01, meth.cutoff=25)
+
 
 # plots ----------------------------------------------------------------
 
