@@ -3,8 +3,9 @@
 - code assumes your working directory is set to project root
 
 ### Directory structure
-/projects/p_dna15 \\
-|  data : contains all raw data \\
+```
+/projects/p_dna15
+|  data : contains all raw data
 |  |  EM_seq_files
 |  |  |  corr.txt
 |  |  |  bismark .cov.gz files...
@@ -17,3 +18,4 @@
 |  .git
 |  .gitignore
 |  README.md
+```
