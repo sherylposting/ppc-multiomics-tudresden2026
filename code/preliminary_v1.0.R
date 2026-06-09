@@ -51,19 +51,6 @@ if (file.exists("code/methylKit_preliminary.RData")) {
 
 }
 
-myDiff=calculateDiffMeth(meth)
-
-# get hyper methylated bases
-myDiff25p.hyper=getMethylDiff(myDiff,difference=25,qvalue=0.01,type="hyper")
-
-# get hypo methylated bases
-myDiff25p.hypo=getMethylDiff(myDiff,difference=25,qvalue=0.01,type="hypo")
-
-# get all differentially methylated bases
-myDiff25p=getMethylDiff(myDiff,difference=25,qvalue=0.01)
-
-diffMethPerChr(myDiff,plot=FALSE,qvalue.cutoff=0.01, meth.cutoff=25)
-
 
 # plots ----------------------------------------------------------------
 
