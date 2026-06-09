@@ -13,7 +13,8 @@
   |      ├── L188015_WT1_R1_bismark_bt2_pe.deduplicated_splitting_report
   |      └── L188015_WT1_R1_bismark_bt2_PE_report
   ├── code
-  |  └── preliminary_v1.0.R
+  |  ├── preliminary_v1.0.R
+  |  └── methylKit_preliminary.RData
   ├── methylDB : files needed for tabix DB
   ├── .git
   ├── .gitignore
