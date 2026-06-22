@@ -7,6 +7,9 @@ library(ggrepel)
 # input bismark .cov format:
 # <chromosome>  <start position>  <end position>  <methylation percentage>  <count methylated>  <count unmethylated>
 
+# set wd to projects folder on cluster
+setwd('/projects/p_dna15')
+
 # load workspace object if present and skip loading / analysis
 if (file.exists("code/methylKit_preliminary.RData")) {
   load("code/methylKit_preliminary.RData")
@@ -47,7 +50,7 @@ if (file.exists("code/methylKit_preliminary.RData")) {
   
   # save workspace objects for easy loading later ------------------------------------------
   
-  save.image(file = "code/methylKit_preliminary_v1.1.RData")
+  save.image(file = "code/methylKit_preliminary.RData")
 
 }
 
@@ -55,35 +58,24 @@ if (file.exists("code/methylKit_preliminary.RData")) {
 
 methRawList.dfList <- lapply(methRawList, getData)
 
-omit_huge <- function(x){
-  print('anothuh one')
-  return(x$coverage[which(x$coverage<30)])
-  }
-
-methRawList.dfList <- lapply(methRawList.dfList, omit_huge)
-
-par(mfrow=c(3,4), mar=c(4,4,2,1), oma=c(0,0,3,0))
-
-for(i in 1:length(methRawList.dfList)){
-  hist(methRawList.dfList[[i]], xlim=c(0,30), main=sample.names[i])
-}
-
-mtext("Methylation Coverage (counts)", side=3,line=1,outer=TRUE,cex=2,font=2)
+# omit_huge <- function(x){
+#   print('anothuh one')
+#   return(x$coverage[which(x$coverage<30)])
+#   }
+# 
+# methRawList.dfList <- lapply(methRawList.dfList, omit_huge)
+# 
+# par(mfrow=c(3,4), mar=c(4,4,2,1), oma=c(0,0,3,0))
+# 
+# for(i in 1:length(methRawList.dfList)){
+#   hist(methRawList.dfList[[i]], xlim=c(0,30), main=sample.names[i])
+# }
+# 
+# mtext("Methylation Coverage (counts)", side=3,line=1,outer=TRUE,cex=2,font=2)
 
 # differential methylation ------------------------------------------------
 
 myDiff=calculateDiffMeth(methBase)
-
-# get hyper methylated bases
-myDiff25p.hyper=getMethylDiff(myDiff,difference=25,qvalue=0.01,type="hyper")
-
-# get hypo methylated bases
-myDiff25p.hypo=getMethylDiff(myDiff,difference=25,qvalue=0.01,type="hypo")
-
-# get all differentially methylated bases
-myDiff25p=getMethylDiff(myDiff,difference=25,qvalue=0.01)
-
-diffMethPerChr(myDiff,plot=FALSE,qvalue.cutoff=0.01, meth.cutoff=25)
 
 
 # plots ----------------------------------------------------------------
