@@ -1,2 +1,4 @@
 data/
 *.RData
+scripts/logs/
+methylDB/
