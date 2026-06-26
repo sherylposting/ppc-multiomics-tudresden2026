@@ -6,6 +6,9 @@
 - "v1.x" files are the initial analysis done with un-normalized data and with WT1 included
 - "v2.x" files work with normalized coverage and omit WT1
 
+### Todos
+- whenever I write the final clean pipeline, get rid of all the "v" names
+
 ### Directory structure
 ```
 /projects/p_dna15

@@ -1,14 +1,20 @@
+### this code loads in bismark .cov files for differential methylation analysis of CpG islands using methylKit and genomation. it creates a METHYLDB directory + object as opposed to a single methRawList object.
+# input: folder of .cov files
+# output: methDB directory, methRawList methDB object at "code/methDB.RData"
+# note: this will write a new directory called methylDB and initial database creation takes a long time. it seems to take longer than a single methRawList object to work with.
+# note: this is depreciated and most of my analysis has been done with a single object made by methraw_v1.0, not methraw_v1.1
+
+# following this methylKit tutorial:
+# https://www.bioconductor.org/packages/release/bioc/vignettes/methylKit/inst/doc/methylKit.html
+# input bismark .cov format:
+# <chromosome>  <start position>  <end position>  <methylation percentage>  <count methylated>  <count unmethylated>
+
 # link R packages installed in temp directory on cluster
 .libPaths(c("/data/horse/ws/shli842i-p_dna15_1/rpacks", .libPaths()))
 
 library(methylKit)
 library(ggplot2)
 library(ggrepel)
-
-# following this methylKit tutorial:
-# https://www.bioconductor.org/packages/release/bioc/vignettes/methylKit/inst/doc/methylKit.html
-# input bismark .cov format:
-# <chromosome>  <start position>  <end position>  <methylation percentage>  <count methylated>  <count unmethylated>
 
 # set wd to home folder on cluster (writeable)
 setwd('/home/shli842i/p_dna15')

@@ -49,14 +49,14 @@ norm.methRawList <- normalizeCoverage(filtered.methRawList, method = "median", c
 # pre and post filtering summary data frame ----------------------------------------
 
 # save summary df pre and post filtering
-prefilt_summary <- lapply(methRawList, summary)
-postfilt_summary <- lapply(norm.methRawList, summary)
+preproc_summary <- lapply(methRawList, summary)
+postproc_summary <- lapply(norm.methRawList, summary)
 
 nraw <- as.numeric(lapply(omitted.methRawList, nrow))
-nfilt <- as.numeric(lapply(norm.methRawList, nrow))
-filt_df <- data.frame('raw_sites' = nraw, 'filt_sites' = nfilt, 'perc_loss' = round(nfilt/nraw, 3))
+nproc <- as.numeric(lapply(norm.methRawList, nrow))
+proc_df <- data.frame('raw_sites' = nraw, 'proc_sites' = nproc, 'perc_loss' = round(nproc/nraw, 3))
 
-save(prefilt_summary, postfilt_summary, filt_df, file = "code/RData/filt-summarydf_preliminary_v2.2.RData")
+save(preproc_summary, postproc_summary, proc_df, file = "code/RData/processed-summarydfs_preliminary_v2.2.RData")
 
 
 # prep dfLists for plotting -----------------------------------------------

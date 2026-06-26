@@ -9,7 +9,7 @@ library(ggrepel)
 setwd('/home/shli842i/p_dna15')
 
 # load workspace object from preliminary
-load("code/RData/methBase_preliminary_v2.2.RData")
+load("code/RData/methBase_preliminary_v2.3.RData")
 cat('everything is loaded')
 
 # differential methylation ------------------------------------------------
@@ -17,7 +17,7 @@ cat('everything is loaded')
 myDiff=calculateDiffMeth(methBase, mc.cores=8)
 cat('diff meth analysis is done')
 
-save(myDiff, file = "code/RData/myDiff_diff-meth_v2.0.RData")
+save(myDiff, file = "code/RData/myDiff_diff-meth_v2.3.RData")
 cat('diff meth analysis is saved')
 
 # assign 'direction' column for coloring on plot
@@ -26,4 +26,4 @@ myDiff_df <- data.frame(myDiff, direction = c('negative','positive')[(myDiff$met
 myDiff_df[abs(myDiff_df$qvalue) > 0.05,]$direction <- 'none'
 myDiff_df <- myDiff_df[order(myDiff_df$qvalue),]
 
-save(list = c("myDiff", "myDiff_df"), file = "code/RData/myDiff_diff-meth_v2.0.RData")
+save(list = c("myDiff", "myDiff_df"), file = "code/RData/myDiff_diff-meth_v2.3.RData")
