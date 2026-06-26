@@ -2,3 +2,5 @@ data/
 *.RData
 scripts/logs/
 methylDB/
+*.ipynb*
+*.libPaths()*
