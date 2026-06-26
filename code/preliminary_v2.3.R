@@ -1,14 +1,29 @@
+### ---------------------- ###
+# this code takes a methRawList object, performs filtering, normalization, and quality control plots (coverage plot, PCA)
+# input: 
+  # methRawList
+# output:
+  # filtered, normalized, united methBase object
+  # coverage_preliminary.pdf - coverage boxplots and histograms
+  # pca_preliminary.pdf - pca plot
+  # processed-summarydfs_preliminary.RData - summary statistics of the counts pre- and post- normalization
+### ---------------------- ###
+
+# these should be specified in the sbatch script
+LIBPATH <- Sys.getenv("LIBPATH", unset = NULL)
+WORKDIR <- Sys.getenv("WORKDIR", unset = NULL)
+
 # link R packages installed in temp directory on cluster
-.libPaths(c("/data/horse/ws/shli842i-p_dna15_1/rpacks", .libPaths()))
+.libPaths(c(LIBPATH, .libPaths()))
 
 library(methylKit)
 library(ggplot2)
 library(ggrepel)
 
 # set wd to home folder on cluster (writeable)
-setwd('/home/shli842i/p_dna15')
+setwd(WORKDIR)
 
-# -------------------------------------------------------------------------
+# stuff for you to edit and check -----------------------------------------
 
 # load workspace objects
 load("code/RData/methRawList_load-methraw_v1.0.RData") # -> methRawList
@@ -17,11 +32,14 @@ SAMPLE_NAMES <- list("WT1","WT2","WT3","WT4","WT5","WT6","WT7","KO1","KO2","KO3"
 LONG_SAMPLE_NAMES <- list("L188015_WT1","L188016_WT2","L188017_WT3","L188018_WT4","L188019_WT5","L188020_WT6","L188021_WT7","L188022_KO1","L188023_KO2","L188024_KO3","L188025_KO4","L188026_KO5")
 TREATMENT <- c(0,0,0,0,0,0,0,1,1,1,1,1)
 
-PLOTS_FILENAME <- "results/coverage_preliminary_v2.3.pdf"
-PCA_FILENAME <- "results/pca-plot_preliminary_v2.3.pdf"
+METHBASE_SAVENAME <- "code/RData/methBase_preliminary_v2.3.RData"
+SUMMARY_SAVENAME <- "code/RData/processed-summarydfs_preliminary_v2.3.RData"
+PLOTS_SAVENAME <- "results/coverage_preliminary_v2.3.pdf"
+PCA_SAVENAME <- "results/pca_preliminary_v2.3.pdf"
 
 FILT_LO_COUNT <- 2 # discard <=2x coverage
 FILT_HI_COUNT <- 30 # discard >30x coverage
+UNITE_MIN <- 1L # loosest setting, does not discard any sites
 
 
 # function definitions ----------------------------------------------------
@@ -95,8 +113,6 @@ norm.methRawList <- normalizeCoverage(filtered.methRawList, method = "median", c
 # # correlation matrix
 # corr <- as.matrix(read.table("data/EM_seq_files/corr.txt")) # already done in previous run... for some reason the methylkit function doesn't return the object so i saved it as a .txt file
 
-save(filtered.methRawList, norm.methRawList, file = "code/RData/processed-methRawLists_preliminary_v2.3.RData")
-
 # pre and post filtering summary data frame ----------------------------------------
 
 # save summary df pre and post filtering + normalization
@@ -107,7 +123,7 @@ nraw <- as.numeric(lapply(omitted.methRawList, nrow))
 nproc <- as.numeric(lapply(norm.methRawList, nrow))
 proc_df <- data.frame('raw_sites' = nraw, 'final_sites' = nproc, 'perc_loss' = round(nproc/nraw, 3))
 
-save(preproc_summary, postproc_summary, proc_df, file = "code/RData/processed-summarydfs_preliminary_v2.3.RData")
+save(preproc_summary, postproc_summary, proc_df, file = SUMMARY_SAVENAME)
 
 
 # prep dfLists for plotting -----------------------------------------------
@@ -119,12 +135,10 @@ methRawList.dfList <- lapply(methRawList.dfList, omit_huge)
 methFiltList.dfList <- lapply(filtered.methRawList, getData)
 methFiltList.dfList <- lapply(methFiltList.dfList, omit_huge)
 
-save(methNormList.dfList, methRawList.dfList, methFiltList.dfList, file = "code/RData/methRawList-dfs_preliminary_v2.3.RData")
-
 # plot coverage after normalization ---------------------------------
 
 # open pdf device to save all the plots
-pdf(PLOTS_FILENAME, width=8, height=6)
+pdf(PLOTS_SAVENAME, width=8, height=6)
 
 boxplotter(methNormList.dfList, SAMPLE_NAMES, title = "Methylation coverage normalized (x)")
 histogrammer(methNormList.dfList, LONG_SAMPLE_NAMES, title = "Methylation coverage normalized (x)")
@@ -134,8 +148,8 @@ dev.off()
 # unite and pca normalized -----------------------------------------------------------
 
 # unite: merge all samples into one object
-methBase <- unite(norm.methRawList, destrand=FALSE, min.per.group = 1L)
-save(methBase, file = "code/RData/methBase_preliminary_v2.3.RData")
+methBase <- unite(norm.methRawList, destrand=FALSE, min.per.group = UNITE_MIN)
+save(methBase, file = METHBASE_SAVENAME)
 
 # pca
 pca <- PCASamples(methBase, obj.return=TRUE)
@@ -144,7 +158,7 @@ pca <- PCASamples(methBase, obj.return=TRUE)
 
 # plotting df prep
 pca_plotdf <- as.data.frame(pca$x)
-pca_plotdf$group <- c('WT', 'KO')[filt.TREATMENT+1] # label on pca with group names. assumes filtered
+pca_plotdf$group <- c('WT', 'KO')[filt.TREATMENT+1] # label on pca with group names. assumes you want to plot filtered
 
 # plot
 pca_plot <- ggplot(pca_plotdf, aes(PC1, PC2, color=group)) +
@@ -152,7 +166,7 @@ pca_plot <- ggplot(pca_plotdf, aes(PC1, PC2, color=group)) +
   geom_text_repel(aes(label = rownames(pca_plotdf)))
 
 ggsave(
-  filename = PCA_FILENAME,
+  SAVENAME = PCA_SAVENAME,
   plot = pca_plot,
   width = 8,
   height = 6,

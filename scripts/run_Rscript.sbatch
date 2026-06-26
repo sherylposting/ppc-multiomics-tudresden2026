@@ -17,6 +17,10 @@ export TMPDIR=/data/horse/ws/shli842i-p_dna15_1/tmp
 echo "TMPDIR=$TMPDIR"
 echo "Starting at $(date)"
 
+# check these
+export LIBPATH=/data/horse/ws/shli842i-p_dna15_1/rpacks
+export WORKDIR=/home/shli842i/p_dna15
+
 Rscript code/granges-annot_v1.0.R
 
 echo "Finished at $(date)"

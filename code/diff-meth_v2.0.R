@@ -1,20 +1,34 @@
+### ---------------------- ###
+# this code takes a methBase object and performs differential methylation analysis between KO - WT batches
+# input: 
+  # methBase
+# output:
+  # myDiff
+  # myDiff_df - data frame with diff cpgs, sorted by q value, labeled with "direction" column
+# note: calculateDiffMeth is very resource-intensive and methBase is very large. using 256GB RAM and 8 cores will take 2 hours
+### ---------------------- ###
+
+# these should be specified in the sbatch script
+LIBPATH <- Sys.getenv("LIBPATH", unset = NULL)
+WORKDIR <- Sys.getenv("WORKDIR", unset = NULL)
+
 # link R packages installed in temp directory on cluster
-.libPaths(c("/data/horse/ws/shli842i-p_dna15_1/rpacks", .libPaths()))
+.libPaths(c(LIBPATH, .libPaths()))
 
 library(methylKit)
-library(ggplot2)
-library(ggrepel)
 
 # set wd to home folder on cluster (writeable)
-setwd('/home/shli842i/p_dna15')
+setwd(WORKDIR)
+
+# stuff for you to edit and check -----------------------------------------
 
 # load workspace object from preliminary
-load("code/RData/methBase_preliminary_v2.3.RData")
+load("code/RData/methBase_preliminary_v2.3.RData") # -> methBase
 cat('everything is loaded')
 
 # differential methylation ------------------------------------------------
 
-myDiff=calculateDiffMeth(methBase, mc.cores=8)
+myDiff=calculateDiffMeth(methBase, mc.cores = 8)
 cat('diff meth analysis is done')
 
 save(myDiff, file = "code/RData/myDiff_diff-meth_v2.3.RData")

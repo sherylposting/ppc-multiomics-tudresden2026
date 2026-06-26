@@ -1,14 +1,26 @@
+### ---------------------- ###
+# this code takes a methRawList object and outputs summary plots, to help decide on a filtering threshold that maximizes the variance
+# input: 
+  # methRawList
+# output:
+  # coverage boxplots, histograms, pca saved as pdf into a directory "results/filter-exploration"
+### ---------------------- ###
+
+# these should be specified in the sbatch script
+LIBPATH <- Sys.getenv("LIBPATH", unset = NULL)
+WORKDIR <- Sys.getenv("WORKDIR", unset = NULL)
+
 # link R packages installed in temp directory on cluster
-.libPaths(c("/data/horse/ws/shli842i-p_dna15_1/rpacks", .libPaths()))
+.libPaths(c(LIBPATH, .libPaths()))
 
 library(methylKit)
 library(ggplot2)
 library(ggrepel)
 
 # set wd to home folder on cluster (writeable)
-setwd('/home/shli842i/p_dna15')
+setwd(WORKDIR)
 
-# -------------------------------------------------------------------------
+# stuff for you to edit and check -----------------------------------------
 
 # load workspace objects
 load("code/RData/methRawList_load-methraw_v1.0.RData") # -> methRawList
@@ -18,6 +30,7 @@ LONG_SAMPLE_NAMES <- list("L188015_WT1","L188016_WT2","L188017_WT3","L188018_WT4
 TREATMENT <- c(0,0,0,0,0,0,0,1,1,1,1,1)
 
 PLOTS_FILENAME <- "results/filter-exploration/filter-exploration-"
+dir.create("results/filter-exploration", recursive = TRUE, showWarnings = FALSE)
 
 FILT_LO_COUNT <- 2 # discard <=2x coverage
 FILT_HI_COUNT <- 30 # discard >30x coverage
@@ -145,9 +158,9 @@ pipeline <- function(rawList, filt.lo.count, omitted){
 
 
 # explore with various filtering cutoffs ------------------------------
-pipeline(methRawList, 2, 0)
-pipeline(methRawList, 3, 0)
-pipeline(methRawList, 4, 0)
-pipeline(methRawList, 2, 1)
-pipeline(methRawList, 3, 1)
-pipeline(methRawList, 4, 1)
+pipeline(methRawList, filt.lo.count = 2, omitted = 0)
+pipeline(methRawList, filt.lo.count = 3, omitted = 0)
+pipeline(methRawList, filt.lo.count = 4, omitted = 0)
+pipeline(methRawList, filt.lo.count = 2, omitted = 1)
+pipeline(methRawList, filt.lo.count = 3, omitted = 1)
+pipeline(methRawList, filt.lo.count = 4, omitted = 1)

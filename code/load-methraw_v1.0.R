@@ -1,6 +1,9 @@
+### ---------------------- ###
 # this code loads in bismark .cov files for differential methylation analysis of CpG islands using methylKit and genomation. it creates a SINGLE methRawList object as opposed to a methylDB
-# input: folder of .cov files
-# output: single methRawList object at "code/methRawList_load-methraw_v1.0.RData"
+# input: 
+  # folder of .cov files
+# output: 
+  # single methRawList object at "code/methRawList_load-methraw_v1.0.RData"
 # warning: the methRawList object is extremely large and will need 100+ GB RAM to work with
 
 # following this methylKit tutorial:
@@ -8,15 +11,21 @@
 # input bismark .cov format:
 # <chromosome>  <start position>  <end position>  <methylation percentage>  <count methylated>  <count unmethylated>
 
+### ---------------------- ###
+
+# these should be specified in the sbatch script
+LIBPATH <- Sys.getenv("LIBPATH", unset = NULL)
+WORKDIR <- Sys.getenv("WORKDIR", unset = NULL)
+
 # link R packages installed in temp directory on cluster
-.libPaths(c("/data/horse/ws/shli842i-p_dna15_1/rpacks", .libPaths()))
+.libPaths(c(LIBPATH, .libPaths()))
 
 library(methylKit)
 library(ggplot2)
 library(ggrepel)
 
 # set wd to home folder on cluster (writeable)
-setwd('/home/shli842i/p_dna15')
+setwd(WORKDIR)
 
 # -------------------------------------------------------------------------
 
