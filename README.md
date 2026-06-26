@@ -2,6 +2,10 @@
 - git is ignoring large files such as raw data (data/) and .RData files
 - code assumes your working directory is set to project root
 
+### Versions
+- "v1.x" files are the initial analysis done with un-normalized data and with WT1 included
+- "v2.x" files work with normalized coverage and omit WT1
+
 ### Directory structure
 ```
 /projects/p_dna15

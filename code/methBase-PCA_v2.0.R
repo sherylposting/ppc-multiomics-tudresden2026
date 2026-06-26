@@ -30,7 +30,7 @@ pca <- PCASamples(methBase, obj.return=TRUE)
 
 # coverage distribution data frame ----------------------------------------
 
-methRawList.dfList <- lapply(methRawList, getData)
+# methRawList.dfList <- lapply(methRawList, getData)
 
 # omit_huge <- function(x){
 #   print('anothuh one')
@@ -67,4 +67,4 @@ ggsave(
   units = "in"
 )
 
-save("methBase", file = "code/methBase_preliminary_v1.3.RData")
+save("methBase", file = "code/methBase_preliminary_v1.2.RData")
