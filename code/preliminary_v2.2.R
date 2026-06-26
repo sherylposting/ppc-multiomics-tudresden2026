@@ -22,7 +22,7 @@ omit_huge <- function(x){
 
 # -------------------------------------------------------------------------
 
-load("code/methRawList_load-methraw_v1.0.RData")
+load("code/RData/methRawList_load-methraw_v1.0.RData")
 sample.names <- list("WT1","WT2","WT3","WT4","WT5","WT6","WT7","KO1","KO2","KO3","KO4","KO5")
   
 # filtered: omit outlier samples (WT1)
@@ -56,7 +56,7 @@ nraw <- as.numeric(lapply(omitted.methRawList, nrow))
 nfilt <- as.numeric(lapply(norm.methRawList, nrow))
 filt_df <- data.frame('raw_sites' = nraw, 'filt_sites' = nfilt, 'perc_loss' = round(nfilt/nraw, 3))
 
-save(prefilt_summary, postfilt_summary, filt_df, file = "code/filt-summarydf_preliminary_v2.2.RData")
+save(prefilt_summary, postfilt_summary, filt_df, file = "code/RData/filt-summarydf_preliminary_v2.2.RData")
 
 
 # prep dfLists for plotting -----------------------------------------------
@@ -68,7 +68,7 @@ methRawList.dfList <- lapply(methRawList.dfList, omit_huge)
 methFiltList.dfList <- lapply(filtered.methRawList, getData)
 methFiltList.dfList <- lapply(methFiltList.dfList, omit_huge)
 
-save(methNormList.dfList, methRawList.dfList, methFiltList.dfList, file = "code/methRawList-dfs_preliminary_v2.2.RData")
+save(methNormList.dfList, methRawList.dfList, methFiltList.dfList, file = "code/RData/methRawList-dfs_preliminary_v2.2.RData")
 
 # coverage after normalization boxplot ---------------------------------
 
@@ -167,7 +167,7 @@ dev.off()
 
 # unite: merge all samples into one object
 methBase <- unite(norm.methRawList, destrand=FALSE, min.per.group = 1L)
-save(methBase, file = "code/methBase_preliminary_v2.2.RData")
+save(methBase, file = "code/RData/methBase_preliminary_v2.2.RData")
 
 # pca
 pca <- PCASamples(methBase, obj.return=TRUE)
