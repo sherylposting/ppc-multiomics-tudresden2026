@@ -1,12 +1,11 @@
 ### ---------------------- ###
-# this code takes a methylDiff object and provides regional annotation information (ex. sites in promoters, other gene features)
+# this code takes a methylDiff object and provides regional annotation information using the annotatr package
 # input: 
   # myDiff
   # methRawList
   # GRCm39_RefSeq.bed.txt reference genome - see lab notebook for how to download
 # output:
-  # sig_diffmeth.csv - table of significantly differential sites
-  # hyper-sig-diffmeth.bed, hypo-sig-diffmeth.bed - BED files to view significant sites on IGV viewer
+
 ### ---------------------- ###
 
 # these should be specified in the sbatch script
@@ -18,16 +17,15 @@ WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15")
 
 library(methylKit)
 library(genomation)
+library(annotatr)
 
 # set wd to home folder on cluster (writeable)
 setwd(WORKDIR)
 
 # stuff for you to edit and check -----------------------------------------
 
-refseq <- readTranscriptFeatures("data/GRCm39_RefSeq.bed.txt")
-
 load('code/RData/myDiff_diff-meth_v2.4.RData')
-load('code/RData/methBase_preliminary_v2.4.RData')
+load('code/RData/methRawList_load-methraw_v1.0.RData')
 
 SIG_DIFFMETH_SAVENAME <- 'results/sig-diffmeth_granges-annot_v2.4.csv'
 BED_SAVENAME <- "results/sig-diffmeth_granges-annot_v2.4.bed"
@@ -35,19 +33,19 @@ BED_SAVENAME <- "results/sig-diffmeth_granges-annot_v2.4.bed"
 # annotate our dataset ----------------------------------------------------
 
 myDiff_feats <- annotateWithGeneParts(as(myDiff,"GRanges"), refseq)
-methBase_df <- getData(methBase)
 
-top5000 <- myDiff_df[1:50000,]
-top5000_temp <- methBase_df[as.numeric(rownames(top5000)), 5:ncol(methBase_df)]
-merged_coverage <- rowSums(top5000_temp[, grep("^coverage", names(top5000_temp), value = TRUE)], na.rm=TRUE)
-top5000$tot_coverage <- merged_coverage
-sig_diffmeth <- top5000[top5000$qvalue < 0.05,]
+promoters <- regionCounts(as(myDiff, "methylRawList"), refseq$promoters)
+
+top500_temp <- methBase_df[as.numeric(rownames(top500)), 5:ncol(methBase_df)]
+merged_coverage <- rowSums(top500_temp[, grep("^coverage", names(top500_temp), value = TRUE)], na.rm=TRUE)
+top500$tot_coverage <- merged_coverage
+sig_diffmeth <- top500[top500$qvalue < 0.05,]
 
 write.table(sig_diffmeth, file=SIG_DIFFMETH_SAVENAME)
 
-cat(nrow(sig_diffmeth), 'differentially methylated CpGs') # 543
-cat(nrow(sig_diffmeth[sig_diffmeth$direction=='positive',]), 'positively methylated CpGs') # 204
-cat(nrow(sig_diffmeth[sig_diffmeth$direction=='negative',]), 'negatively methylated CpGs') # 334
+cat(nrow(sig_diffmeth), 'differentially methylated CpGs') # 135
+cat(nrow(sig_diffmeth[sig_diffmeth$direction=='positive',]), 'positively methylated CpGs') # 68
+cat(nrow(sig_diffmeth[sig_diffmeth$direction=='negative',]), 'negatively methylated CpGs') # 67
 
 
 # export significant cpg as .bed files for IGV viewer ----------------------------
@@ -69,16 +67,10 @@ for(name in names(beds)){
     score = pmin(1000, -log10(diffmeth$qvalue) * 100),
     strand = "."
   )
-
-  BED_SAVENAME_temp <- sub(
-    "results/",
-    paste0("results/", name, "-"),
-    BED_SAVENAME
-  )
   
   write.table(
     bed,
-    file = BED_SAVENAME_temp,
+    file = paste0(name, "-", BED_SAVENAME),
     sep = "\t",
     quote = FALSE,
     row.names = FALSE,

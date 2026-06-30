@@ -1,9 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name=preliminary2.4
-#SBATCH --output=logs/preliminary2.4_%j.out
-#SBATCH --error=logs/preliminary2.4_%j.err
-#SBATCH --time=4:00:00
-#SBATCH --mem=256G
+#SBATCH --job-name=granges-annot_v2.4
+#SBATCH --output=logs/granges-annot_v2.4_%j.out
+#SBATCH --error=logs/granges-annot_v2.4_%j.err
+#SBATCH --time=2:00:00
+#SBATCH --mem=64G
 #SBATCH --cpus-per-task=1
 
 module purge
@@ -14,12 +14,13 @@ cd /home/shli842i/p_dna15
 mkdir -p scripts/logs /data/horse/ws/shli842i-p_dna15_1/tmp
 export TMPDIR=/data/horse/ws/shli842i-p_dna15_1/tmp
 
+echo "TMPDIR=$TMPDIR"
+echo "Starting at $(date)"
+
 # check these
 export LIBPATH=/data/horse/ws/shli842i-p_dna15_1/rpacks
 export WORKDIR=/home/shli842i/p_dna15
 
-echo "Starting at $(date)"
-
-Rscript code/preliminary_v2.4.R
+Rscript code/granges-annot_v2.0.R
 
 echo "Finished at $(date)"

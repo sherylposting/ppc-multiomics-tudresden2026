@@ -32,14 +32,14 @@ SAMPLE_NAMES <- list("WT1","WT2","WT3","WT4","WT5","WT6","WT7","KO1","KO2","KO3"
 LONG_SAMPLE_NAMES <- list("L188015_WT1","L188016_WT2","L188017_WT3","L188018_WT4","L188019_WT5","L188020_WT6","L188021_WT7","L188022_KO1","L188023_KO2","L188024_KO3","L188025_KO4","L188026_KO5")
 TREATMENT <- c(0,0,0,0,0,0,0,1,1,1,1,1)
 
-METHBASE_SAVENAME <- "code/RData/methBase_preliminary_v2.3.RData"
-SUMMARY_SAVENAME <- "code/RData/processed-summarydfs_preliminary_v2.3.RData"
-PLOTS_SAVENAME <- "results/preliminary-plots_v2.3.pdf"
+METHBASE_SAVENAME <- "code/RData/methBase_preliminary_v2.4.RData"
+SUMMARY_SAVENAME <- "code/RData/processed-summarydfs_preliminary_v2.4.RData"
+PLOTS_SAVENAME <- "results/preliminary-plots_v2.4.pdf"
 
-FILT_LO_COUNT <- 2 # discard <=2x coverage
+FILT_LO_COUNT <- 3 # discard <=2x coverage
 FILT_HI_COUNT <- 30 # discard >30x coverage
 UNITE_MIN <- 1L # loosest setting, does not discard any sites
-OMITTED <- 1
+OMITTED <- 0
 
 # function definitions ----------------------------------------------------
 

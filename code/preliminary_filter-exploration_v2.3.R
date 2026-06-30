@@ -7,8 +7,8 @@
 ### ---------------------- ###
 
 # these should be specified in the sbatch script
-LIBPATH <- Sys.getenv("LIBPATH", unset = NULL)
-WORKDIR <- Sys.getenv("WORKDIR", unset = NULL)
+LIBPATH <- Sys.getenv("LIBPATH", unset = "/data/horse/ws/shli842i-p_dna15_1/rpacks")
+WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15")
 
 # link R packages installed in temp directory on cluster
 .libPaths(c(LIBPATH, .libPaths()))
@@ -69,9 +69,10 @@ histogrammer <- function(dfList, samplenames, title, ...){
   for(i in 1:length(dfList)){
     hist(dfList[[i]], 
          xlim=c(0,30), 
-         main=samplenames, 
+         main=samplenames[i], 
          xaxt = "n",
          breaks = seq(0.5, 30.5, by = 1),
+         ylim = c(0, 8e6),
          xlab = "")
     
     axis(1, at = 0:30)
@@ -82,10 +83,6 @@ histogrammer <- function(dfList, samplenames, title, ...){
 
 # function to run the entire pipeline for each filtering threshold
 pipeline <- function(rawList, filt.lo.count, omitted){
-  
-  # plot coverage of full data
-  boxplotter(rawList.dfList, SAMPLE_NAMES, title = "Methylation coverage full data (x)")
-  histogrammer(rawList.dfList, SAMPLE_NAMES, title = "Methylation coverage full data (x)")
   
   # filtered: omit outlier samples
   keep <- setdiff(seq_along(LONG_SAMPLE_NAMES), omitted)
@@ -119,16 +116,58 @@ pipeline <- function(rawList, filt.lo.count, omitted){
   # open pdf device to save all the plots
   pdf(paste0(PLOTS_FILENAME, filt.lo.count, "x", omitted, "omit_v2.3.pdf"), width=8, height=6)
   
+  # plot coverage of full data
+  boxplotter(rawList.dfList, SAMPLE_NAMES, title = "Methylation coverage, full data (x)")
+  histogrammer(rawList.dfList, SAMPLE_NAMES, title = "Methylation coverage, full data (x)")
+  
   omitname <- SAMPLE_NAMES[omitted]
-  if(omitted == 0){omitname="none"}
+  if(all(omitted== 0)){omitname="none"}
   
   # plot coverage after filtering
-  boxplotter(filtList.dfList, filt.SAMPLE_NAMES, title = paste("omit", omitname, filt.lo.count, "x cutoff:", "Methylation coverage filtered (x)"))
-  histogrammer(filtList.dfList, filt.SAMPLE_NAMES, title = paste("omit", omitname, filt.lo.count, "x cutoff:", "Methylation coverage filtered (x)"))
+  boxplotter(
+    filtList.dfList,
+    filt.SAMPLE_NAMES,
+    title = paste(
+      "Omit",
+      paste(omitname, collapse = ", "),
+      paste0(filt.lo.count, "x cutoff:"),
+      "Methylation coverage, filtered (x)"
+    )
+  )
+  
+  histogrammer(
+    filtList.dfList,
+    filt.SAMPLE_NAMES,
+    title = paste(
+      "Omit",
+      paste(omitname, collapse = ", "),
+      paste0(filt.lo.count, "x cutoff:"),
+      "Methylation coverage, filtered (x)"
+    )
+  )
   
   # plot coverage after normalization
-  boxplotter(normList.dfList, filt.SAMPLE_NAMES, title = paste("omit", omitname, filt.lo.count, "x cutoff:", "Methylation coverage normalized (x)"))
-  histogrammer(normList.dfList, filt.SAMPLE_NAMES, title = paste("omit", omitname, filt.lo.count, "x cutoff:", "Methylation coverage normalized (x)"))
+  boxplotter(
+    normList.dfList,
+    filt.SAMPLE_NAMES,
+    title = paste(
+      "Omit",
+      paste(omitname, collapse = ", "),
+      paste0(filt.lo.count, "x cutoff:"),
+      "Methylation coverage, normalized (x)"
+    )
+  )
+  
+  histogrammer(
+    normList.dfList,
+    filt.SAMPLE_NAMES,
+    title = paste(
+      "Omit",
+      paste(omitname, collapse = ", "),
+      paste0(filt.lo.count, "x cutoff:"),
+      "Methylation coverage, normalized (x)"
+    )
+  )
 
 # -------------------------------------------------------------------------
   
@@ -154,13 +193,28 @@ pipeline <- function(rawList, filt.lo.count, omitted){
   print(pca_plot)
   
   dev.off()
+  
+  # pre and post filtering summary data frame ----------------------------------------
+  
+  # save summary df pre and post filtering + normalization
+  preproc_summary <- lapply(rawList, summary)
+  postproc_summary <- lapply(norm.rawList, summary)
+  
+  nraw <- as.numeric(lapply(omitted.rawList, nrow))
+  nproc <- as.numeric(lapply(norm.rawList, nrow))
+  proc_df <- data.frame('raw_sites' = nraw, 'final_sites' = nproc, 'perc_loss' = round(1-(nproc/nraw), 3))
+  
+  save(preproc_summary, postproc_summary, proc_df, file = paste0(PLOTS_FILENAME, filt.lo.count, "x", omitted, "omit-summary_v2.3.RData"))
+  
 }
 
 
 # explore with various filtering cutoffs ------------------------------
+pipeline(methRawList, filt.lo.count = 3, omitted = 1)
 pipeline(methRawList, filt.lo.count = 2, omitted = 0)
 pipeline(methRawList, filt.lo.count = 3, omitted = 0)
 pipeline(methRawList, filt.lo.count = 4, omitted = 0)
 pipeline(methRawList, filt.lo.count = 2, omitted = 1)
-pipeline(methRawList, filt.lo.count = 3, omitted = 1)
 pipeline(methRawList, filt.lo.count = 4, omitted = 1)
+
+pipeline(methRawList, filt.lo.count = 3, omitted = c(1,6))

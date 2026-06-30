@@ -1,6 +1,6 @@
 # these should be specified in the sbatch script
-LIBPATH <- Sys.getenv("LIBPATH", unset = NULL)
-WORKDIR <- Sys.getenv("WORKDIR", unset = NULL)
+LIBPATH <- Sys.getenv("LIBPATH", unset = "/data/horse/ws/shli842i-p_dna15_1/rpacks")
+WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15")
 
 # link R packages installed in temp directory on cluster
 .libPaths(c(LIBPATH, .libPaths()))
@@ -22,7 +22,7 @@ DE_volcano <- ggplot(data=myDiff_df, aes(x=meth.diff, y=-log10(qvalue), col=dire
   scale_color_manual(values = c("cyan3", "grey", "red3"))
 
 ggsave(
-  filename = "results/volcano-plot_diff-meth_v2.0.png",
+  filename = "results/volcano-plot_diff-meth_v2.3.png",
   plot = DE_volcano,
   width = 8,
   height = 6,
