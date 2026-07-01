@@ -1,6 +1,10 @@
-data/
 *.RData
-scripts/logs/
+*.err
+*.out
+*.pdf
+*.csv
+*.txt
+*.tsv
 methylDB/
 *.ipynb*
 *.libPaths()*

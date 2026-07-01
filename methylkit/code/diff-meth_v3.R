@@ -10,7 +10,8 @@
 
 # these should be specified in the sbatch script
 LIBPATH <- Sys.getenv("LIBPATH", unset = "/data/horse/ws/shli842i-p_dna15_1/rpacks")
-WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15")
+WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15/methylkit")
+VERSION <- Sys.getenv("VERSION", unset = "v3.x")
 
 # link R packages installed in temp directory on cluster
 .libPaths(c(LIBPATH, .libPaths()))
@@ -20,13 +21,13 @@ library(methylKit)
 # set wd to home folder on cluster (writeable)
 setwd(WORKDIR)
 
-# stuff for you to edit and check -----------------------------------------
+# global variables - check these -----------------------------------------
 
 # load workspace object from preliminary
-load("code/RData/methBase_preliminary_v2.4.RData") # -> methBase
+load(paste0("code/RData/methBase_preliminary_", VERSION, ".RData")) # -> methBase
 cat('everything is loaded')
 
-DIFFMETH_SAVENAME <- "code/RData/myDiff_diff-meth_v2.4.RData"
+DIFFMETH_SAVENAME <- paste0("code/RData/myDiff_diff-meth_", VERSION, ".RData")
 
 # differential methylation ------------------------------------------------
 

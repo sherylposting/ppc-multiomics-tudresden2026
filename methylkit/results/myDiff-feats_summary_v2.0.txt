@@ -1,0 +1,19 @@
+Summary of target set annotation with genic parts
+Rows in target set: 40230402
+-----------------------
+percentage of target features overlapping with annotation:
+  promoter       exon     intron intergenic 
+     10.12      12.11      48.51      41.17 
+
+percentage of target features overlapping with annotation:
+(with promoter > exon > intron precedence):
+  promoter       exon     intron intergenic 
+     10.12       7.57      41.14      41.17 
+
+percentage of annotation boundaries with feature overlap:
+promoter     exon   intron 
+   98.96    89.04    95.31 
+
+summary of distances to the nearest TSS:
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+      0    5277   17507   49935   49646 1374341 

@@ -15,7 +15,7 @@
 
 # these should be specified in the sbatch script
 LIBPATH <- Sys.getenv("LIBPATH", unset = "/data/horse/ws/shli842i-p_dna15_1/rpacks")
-WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15")
+WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15/methylkit")
 
 # link R packages installed in temp directory on cluster
 .libPaths(c(LIBPATH, .libPaths()))
@@ -27,24 +27,24 @@ library(ggrepel)
 # set wd to home folder on cluster (writeable)
 setwd(WORKDIR)
 
-# -------------------------------------------------------------------------
+# global variables - check these -------------------------------------------
 
-data_dir <- "/projects/p_dna15/data/EM_seq_files"
+DATADIR <- "/projects/p_dna15/data/EM_seq_files"
 
-long.sample.names <- list("L188015_WT1","L188016_WT2","L188017_WT3","L188018_WT4","L188019_WT5","L188020_WT6","L188021_WT7","L188022_KO1","L188023_KO2","L188024_KO3","L188025_KO4","L188026_KO5")
+LONG_SAMPLENAMES <- list("L188015_WT1","L188016_WT2","L188017_WT3","L188018_WT4","L188019_WT5","L188020_WT6","L188021_WT7","L188022_KO1","L188023_KO2","L188024_KO3","L188025_KO4","L188026_KO5")
 
-treatment <- c(0,0,0,0,0,0,0,1,1,1,1,1)
+TREATMENT <- c(0,0,0,0,0,0,0,1,1,1,1,1)
 
 # -------------------------------------------------------------------------
 
 # load bismark .cov file names from folder
-file.list <- as.list(list.files(data_dir, pattern = "\\.cov.gz$", full.names = TRUE)) # name list of all .cov files in folder
+file.list <- as.list(list.files(DATADIR, pattern = "\\.cov.gz$", full.names = TRUE)) # name list of all .cov files in folder
 
 # load files as single object
 methRawList=methRead(file.list,
-                     sample.id=long.sample.names,
+                     sample.id=LONG_SAMPLENAMES,
                      assembly="GRCm39", # just annotation
-                     treatment=treatment,
+                     treatment=TREATMENT,
                      context="CpG", # bismark .cov / bedgraph by default returns cpg context only
                      mincov = 2, # default is 10x coverage
                      pipeline = "bismarkCoverage"

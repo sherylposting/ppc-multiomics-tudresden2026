@@ -9,11 +9,11 @@
 module purge
 module load release/25.06 GCC/13.3.0 R
 
-cd /home/shli842i/p_dna15
+cd /home/shli842i/p_dna15/methylkit
 
 # global variables - check these
 export LIBPATH=/data/horse/ws/shli842i-p_dna15_1/rpacks
-export WORKDIR=/home/shli842i/p_dna15
+export WORKDIR=/home/shli842i/p_dna15/methylkit
 mkdir -p scripts/logs /data/horse/ws/shli842i-p_dna15_1/tmp
 export TMPDIR=/data/horse/ws/shli842i-p_dna15_1/tmp
 

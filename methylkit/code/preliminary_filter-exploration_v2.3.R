@@ -1,20 +1,14 @@
 ### ---------------------- ###
-# this code takes a methRawList object, performs filtering, normalization, and quality control plots (coverage plot, PCA)
+# this code takes a methRawList object and outputs summary plots, to help decide on a filtering threshold that maximizes the variance
 # input: 
   # methRawList
 # output:
-  # methBase - filtered, normalized, united CpGs
-  # coverage_preliminary.pdf - coverage boxplots and histograms
-  # pca_preliminary.pdf - pca plot
-  # processed-summarydfs_preliminary.RData - summary statistics of the counts pre- and post- normalization
+  # coverage boxplots, histograms, pca saved as pdf into a directory "results/filter-exploration"
 ### ---------------------- ###
 
 # these should be specified in the sbatch script
 LIBPATH <- Sys.getenv("LIBPATH", unset = "/data/horse/ws/shli842i-p_dna15_1/rpacks")
-WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15")
-VERSION <- Sys.getenv("VERSION", unset = "v3.x")
-FILT_LO_COUNT <- Sys.getenv("FILT_LO_COUNT", unset = 2)
-OMITTED <- Sys.getenv("OMITTED", unset = 0)
+WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15/methylkit")
 
 # link R packages installed in temp directory on cluster
 .libPaths(c(LIBPATH, .libPaths()))
@@ -26,7 +20,7 @@ library(ggrepel)
 # set wd to home folder on cluster (writeable)
 setwd(WORKDIR)
 
-# global variables - check these -----------------------------------------
+# stuff for you to edit and check -----------------------------------------
 
 # load workspace objects
 load("code/RData/methRawList_load-methraw_v1.0.RData") # -> methRawList
@@ -35,12 +29,12 @@ SAMPLE_NAMES <- list("WT1","WT2","WT3","WT4","WT5","WT6","WT7","KO1","KO2","KO3"
 LONG_SAMPLE_NAMES <- list("L188015_WT1","L188016_WT2","L188017_WT3","L188018_WT4","L188019_WT5","L188020_WT6","L188021_WT7","L188022_KO1","L188023_KO2","L188024_KO3","L188025_KO4","L188026_KO5")
 TREATMENT <- c(0,0,0,0,0,0,0,1,1,1,1,1)
 
-METHBASE_SAVENAME <- paste0("code/RData/methBase_preliminary_", VERSION, ".RData")
-SUMMARY_SAVENAME <- paste0("code/RData/processed-summarydfs_preliminary_", VERSION, ".RData")
-PLOTS_SAVENAME <- paste0("results/preliminary-plots_", VERSION, ".pdf")
+PLOTS_FILENAME <- "results/filter-exploration/filter-exploration-"
+dir.create("results/filter-exploration", recursive = TRUE, showWarnings = FALSE)
 
+FILT_LO_COUNT <- 2 # discard <=2x coverage
 FILT_HI_COUNT <- 30 # discard >30x coverage
-UNITE_MIN <- 1L # loosest setting, does not discard any sites
+
 
 # function definitions ----------------------------------------------------
 
@@ -95,18 +89,18 @@ pipeline <- function(rawList, filt.lo.count, omitted){
   filt.SAMPLE_NAMES <- LONG_SAMPLE_NAMES[keep]
   filt.TREATMENT <- TREATMENT[keep]
   omitted.rawList <- reorganize(rawList, 
-                                sample.ids = filt.SAMPLE_NAMES, 
-                                treatment = filt.TREATMENT)
+                                    sample.ids = filt.SAMPLE_NAMES, 
+                                    treatment = filt.TREATMENT)
   
   # reassign short sample names for plot
   filt.SAMPLE_NAMES <- SAMPLE_NAMES[keep]
   
   # filtered: discard cpg that have <=2x coverage or >30x
   filtered.rawList <- filterByCoverage(omitted.rawList,
-                                       lo.count=filt.lo.count,
-                                       lo.perc=NULL,
-                                       hi.count=FILT_HI_COUNT, 
-                                       hi.perc=NULL)
+                                           lo.count=filt.lo.count,
+                                           lo.perc=NULL,
+                                           hi.count=FILT_HI_COUNT, 
+                                           hi.perc=NULL)
   
   
   # normalize: normalize coverage for overrepresented samples using a scaling factor (difference to median)
@@ -120,7 +114,7 @@ pipeline <- function(rawList, filt.lo.count, omitted){
   filtList.dfList <- lapply(filtList.dfList, omit_huge)
   
   # open pdf device to save all the plots
-  pdf(PLOTS_SAVENAME, width=8, height=6)
+  pdf(paste0(PLOTS_FILENAME, filt.lo.count, "x", omitted, "omit_v2.3.pdf"), width=8, height=6)
   
   # plot coverage of full data
   boxplotter(rawList.dfList, SAMPLE_NAMES, title = "Methylation coverage, full data (x)")
@@ -174,12 +168,11 @@ pipeline <- function(rawList, filt.lo.count, omitted){
       "Methylation coverage, normalized (x)"
     )
   )
-  
-  # -------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------
   
   # unite: merge all samples into one object
   methBase <- unite(norm.rawList, destrand=FALSE, min.per.group = 1L)
-  save(methBase, file = METHBASE_SAVENAME)
   
   # pca
   par(mfrow=c(1,1), mar=c(5.1, 4.1, 4.1, 2.1), oma=c(0,0,0,0))
@@ -211,10 +204,17 @@ pipeline <- function(rawList, filt.lo.count, omitted){
   nproc <- as.numeric(lapply(norm.rawList, nrow))
   proc_df <- data.frame('raw_sites' = nraw, 'final_sites' = nproc, 'perc_loss' = round(1-(nproc/nraw), 3))
   
-  save(preproc_summary, postproc_summary, proc_df, file = SUMMARY_SAVENAME)
+  save(preproc_summary, postproc_summary, proc_df, file = paste0(PLOTS_FILENAME, filt.lo.count, "x", omitted, "omit-summary_v2.3.RData"))
   
 }
 
 
 # explore with various filtering cutoffs ------------------------------
-pipeline(methRawList, filt.lo.count = FILT_LO_COUNT, omitted = OMITTED)
+pipeline(methRawList, filt.lo.count = 3, omitted = 1)
+pipeline(methRawList, filt.lo.count = 2, omitted = 0)
+pipeline(methRawList, filt.lo.count = 3, omitted = 0)
+pipeline(methRawList, filt.lo.count = 4, omitted = 0)
+pipeline(methRawList, filt.lo.count = 2, omitted = 1)
+pipeline(methRawList, filt.lo.count = 4, omitted = 1)
+
+pipeline(methRawList, filt.lo.count = 3, omitted = c(1,6))

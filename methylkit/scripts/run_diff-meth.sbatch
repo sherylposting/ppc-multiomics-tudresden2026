@@ -1,19 +1,19 @@
 #!/bin/bash
-#SBATCH --job-name=diff-meth-pca_v3
-#SBATCH --output=logs/diff-meth-pca_v3_%j.out
-#SBATCH --error=logs/diff-meth-pca_v3_%j.err
-#SBATCH --time=1:00:00
-#SBATCH --mem=64G
-#SBATCH --cpus-per-task=1
+#SBATCH --job-name=diff-meth_v3
+#SBATCH --output=logs/diff-meth_v3_%j.out
+#SBATCH --error=logs/diff-meth_v3_%j.err
+#SBATCH --time=6:00:00
+#SBATCH --mem=400G
+#SBATCH --cpus-per-task=8
 
 module purge
 module load release/25.06 GCC/13.3.0 R
 
-cd /home/shli842i/p_dna15
+cd /home/shli842i/p_dna15/methylkit
 
 # global variables - check these
 export LIBPATH=/data/horse/ws/shli842i-p_dna15_1/rpacks
-export WORKDIR=/home/shli842i/p_dna15
+export WORKDIR=/home/shli842i/p_dna15/methylkit
 mkdir -p scripts/logs /data/horse/ws/shli842i-p_dna15_1/tmp
 export TMPDIR=/data/horse/ws/shli842i-p_dna15_1/tmp
 
@@ -22,6 +22,6 @@ export VERSION=v3.1
 
 echo "Starting run $VERSION at $(date)"
 
-Rscript code/diff-meth-pca_v3.R
+Rscript code/diff-meth_v3.R
 
 echo "Finished at $(date)"

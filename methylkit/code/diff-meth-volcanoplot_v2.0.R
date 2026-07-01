@@ -1,6 +1,6 @@
 # these should be specified in the sbatch script
 LIBPATH <- Sys.getenv("LIBPATH", unset = "/data/horse/ws/shli842i-p_dna15_1/rpacks")
-WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15")
+WORKDIR <- Sys.getenv("WORKDIR", unset = "/home/shli842i/p_dna15/methylkit")
 
 # link R packages installed in temp directory on cluster
 .libPaths(c(LIBPATH, .libPaths()))

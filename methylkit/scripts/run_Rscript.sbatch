@@ -1,15 +1,15 @@
 #!/bin/bash
-#SBATCH --job-name=granges-annot_v2.4
-#SBATCH --output=logs/granges-annot_v2.4_%j.out
-#SBATCH --error=logs/granges-annot_v2.4_%j.err
-#SBATCH --time=2:00:00
+#SBATCH --job-name=diff-meth-pca_v2.4
+#SBATCH --output=logs/diff-meth-pca_v2.4_%j.out
+#SBATCH --error=logs/diff-meth-pca_v2.4_%j.err
+#SBATCH --time=1:00:00
 #SBATCH --mem=64G
 #SBATCH --cpus-per-task=1
 
 module purge
 module load release/25.06 GCC/13.3.0 R
 
-cd /home/shli842i/p_dna15
+cd /home/shli842i/p_dna15/methylkit
 
 mkdir -p scripts/logs /data/horse/ws/shli842i-p_dna15_1/tmp
 export TMPDIR=/data/horse/ws/shli842i-p_dna15_1/tmp
@@ -19,8 +19,8 @@ echo "Starting at $(date)"
 
 # check these
 export LIBPATH=/data/horse/ws/shli842i-p_dna15_1/rpacks
-export WORKDIR=/home/shli842i/p_dna15
+export WORKDIR=/home/shli842i/p_dna15/methylkit
 
-Rscript code/granges-annot_v2.0.R
+Rscript code/diff-meth-pca_v2.0.R
 
 echo "Finished at $(date)"
