@@ -6,6 +6,9 @@
 #SBATCH --mem=400G
 #SBATCH --cpus-per-task=8
 
+module purge
+module load release/25.06 GCC/13.3.0 R
+
 cd /home/shli842i/p_dna15
 
 # global variables - check these
