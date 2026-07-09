@@ -15,7 +15,6 @@ setwd(WORKDIR)
 
 # -------------------------------------------------------------------------
 
-# these were from v2 (min 2x cutoff, omit WT1)
 load(paste0("code/RData/methBase_preliminary_", VERSION, ".RData")) # -> methBase
 load(paste0("code/RData/myDiff_diff-meth_", VERSION, ".RData")) # -> myDiff, myDiff_df
 TREATMENT <- c(0,0,0,0,0,0,0,1,1,1,1,1)
@@ -43,7 +42,7 @@ pca_plot <- ggplot(pca_plotdf, aes(PC1, PC2, color=group)) +
   labs(
     x = sprintf("PC1 (%.1f%%)", var_explained[1]),
     y = sprintf("PC2 (%.1f%%)", var_explained[2]),
-    title = '3x cutoff, omit none, after differential methylation analysis'
+    title = '2x cutoff, omit none, after differential methylation analysis'
   )
 
 print(pca_plot)

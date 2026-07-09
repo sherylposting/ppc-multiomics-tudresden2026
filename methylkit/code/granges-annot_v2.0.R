@@ -24,17 +24,22 @@ setwd(WORKDIR)
 
 # stuff for you to edit and check -----------------------------------------
 
-refseq <- readTranscriptFeatures("data/GRCm39_RefSeq.bed.txt")
+refseq <- readTranscriptFeatures("/home/shli842i/p_dna15/data/GRCm39_RefSeq.bed.txt")
 
 load('code/RData/myDiff_diff-meth_v2.4.RData')
 load('code/RData/methBase_preliminary_v2.4.RData')
 
 SIG_DIFFMETH_SAVENAME <- 'results/sig-diffmeth_granges-annot_v2.4.csv'
+SUMMARY_SAVENAME <- 'results/myDiff-feats_granges-annot_v2.4.RData'
 BED_SAVENAME <- "results/sig-diffmeth_granges-annot_v2.4.bed"
 
 # annotate our dataset ----------------------------------------------------
 
 myDiff_feats <- annotateWithGeneParts(as(myDiff,"GRanges"), refseq)
+
+print(myDiff_feats)
+save(myDiff_feats, file = SUMMARY_SAVENAME)
+
 methBase_df <- getData(methBase)
 
 top5000 <- myDiff_df[1:50000,]

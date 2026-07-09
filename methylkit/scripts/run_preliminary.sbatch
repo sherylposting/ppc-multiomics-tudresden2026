@@ -17,9 +17,9 @@ export WORKDIR=/home/shli842i/p_dna15/methylkit
 export TMPDIR=/data/horse/ws/shli842i-p_dna15_1/tmp
 
 # global variables - edit per run
-export VERSION=v3.2
-export FILT_LO_COUNT=3
-export OMITTED=1
+export VERSION=v3.3
+export FILT_LO_COUNT=4
+export OMITTED=0
 
 echo "Starting run $VERSION at $(date) with $FILT_LO_COUNT x cutoff and sample $OMITTED omitted"
 

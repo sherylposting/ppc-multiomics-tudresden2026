@@ -18,7 +18,7 @@ mkdir -p scripts/logs /data/horse/ws/shli842i-p_dna15_1/tmp
 export TMPDIR=/data/horse/ws/shli842i-p_dna15_1/tmp
 
 # global variables - edit per run
-export VERSION=v3.1
+export VERSION=v3.2
 
 echo "Starting run $VERSION at $(date)"
 
