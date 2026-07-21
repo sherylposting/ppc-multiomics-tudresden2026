@@ -8,3 +8,4 @@
 methylDB/
 *.ipynb*
 *.libPaths()*
+.Rproj.user
