@@ -50,7 +50,7 @@ testCovariate = "Group"
 adjustCovariate = "Sex"
 matchCovariate = NULL
 cores = 1
-GOfuncR = TRUE
+GOfuncR = FALSE
 runHOMER = FALSE
 sexCheck = TRUE # omits sex chromosomes from the analysis
 EnsDb = FALSE
@@ -618,25 +618,24 @@ purrr::walk(dplyr::case_when(genome %in% c("hg38", "hg19", "mm10", "mm9", "rn6")
 
 # Overlap with human imprinted genes --------------------------------------
 
-cat("\n[DMRichR] Testing for imprinted gene enrichment \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
-
-dmrList <- sigRegions %>% 
-  DMRichR::dmrList()
-
-sink("DMRs/human_imprinted_gene_overlaps.txt")
-
-purrr::walk(seq_along(dmrList),
-            function(x){
-              print(glue::glue("Analyzing {names(dmrList)[x]}"))
-              
-              dmrList[x] %>%
-                DMRichR::imprintOverlap(regions = regions,
-                                        TxDb = TxDb,
-                                        annoDb = annoDb,
-                                        resPath = resPath)
-            })
-
-sink()
+# cat("\n[DMRichR] Testing for imprinted gene enrichment \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
+# 
+# dmrList <- sigRegions %>% 
+#   DMRichR::dmrList()
+# 
+# sink("DMRs/human_imprinted_gene_overlaps.txt")
+# 
+# purrr::walk(seq_along(dmrList),
+#             function(x){
+#               print(glue::glue("Analyzing {names(dmrList)[x]}"))
+#               
+#               dmrList[x] %>%
+#                 DMRichR::imprintOverlap(regions = regions,
+#                                         TxDb = TxDb,
+#                                         annoDb = annoDb)
+#             })
+# 
+# sink()
 
 # Manhattan plot ----------------------------------------------------------
 
@@ -659,7 +658,7 @@ cat("\n[DMRichR] Performing gene ontology analyses \t\t\t", format(Sys.time(), "
 dir.create("Ontologies")
 
 if(genome %in% c("hg38", "hg19", "mm10", "mm9") & is.null(resPath)){
-  
+
   print(glue::glue("Running GREAT"))
   GREATjob <- sigRegions %>%
     dplyr::as_tibble() %>%
@@ -669,7 +668,7 @@ if(genome %in% c("hg38", "hg19", "mm10", "mm9") & is.null(resPath)){
                            rule = "oneClosest",
                            request_interval = 1,
                            version = "4.0.4")
-  
+
   print(glue::glue("Saving and plotting GREAT results"))
   GREATjob %>%
     rGREAT::getEnrichmentTables(category = "GO") %T>% #%>%
@@ -685,7 +684,7 @@ if(genome %in% c("hg38", "hg19", "mm10", "mm9") & is.null(resPath)){
                     device = NULL,
                     height = 8.5,
                     width = 10)
-  
+
   # pdf(glue::glue("Ontologies/GREAT_gene_associations_graph.pdf"),
   #     height = 8.5,
   #     width = 11)
@@ -699,19 +698,19 @@ if(genome %in% c("hg38", "hg19", "mm10", "mm9") & is.null(resPath)){
 
 if(GOfuncR == TRUE){
   print(glue::glue("Running GOfuncR"))
-  sigRegions %>% 
+  sigRegions %>%
     DMRichR::GOfuncR(regions = regions,
                      n_randsets = 1000,
                      upstream = 5000,
                      downstream = 1000,
                      annoDb = annoDb,
                      TxDb = TxDb) %T>%
-    openxlsx::write.xlsx(glue::glue("Ontologies/GOfuncR.xlsx")) %>% 
+    openxlsx::write.xlsx(glue::glue("Ontologies/GOfuncR.xlsx")) %>%
     DMRichR::slimGO(tool = "GOfuncR",
                     annoDb = annoDb,
                     plots = FALSE) %T>%
-    openxlsx::write.xlsx(file = glue::glue("Ontologies/GOfuncR_slimmed_results.xlsx")) %>% 
-    DMRichR::GOplot() %>% 
+    openxlsx::write.xlsx(file = glue::glue("Ontologies/GOfuncR_slimmed_results.xlsx")) %>%
+    DMRichR::GOplot() %>%
     ggplot2::ggsave(glue::glue("Ontologies/GOfuncR_plot.pdf"),
                     plot = .,
                     device = NULL,
@@ -722,7 +721,7 @@ if(GOfuncR == TRUE){
 if(genome != "TAIR10" & genome != "TAIR9" & is.null(resPath)){
   tryCatch({
     print(glue::glue("Running enrichR"))
-    
+
     enrichR:::.onAttach() # Needed or else "EnrichR website not responding"
     #dbs <- enrichR::listEnrichrDbs()
     dbs <- c("GO_Biological_Process_2018",
@@ -732,7 +731,7 @@ if(genome != "TAIR10" & genome != "TAIR9" & is.null(resPath)){
              "Panther_2016",
              "Reactome_2016",
              "RNA-Seq_Disease_Gene_and_Drug_Signatures_from_GEO")
-    
+
     if(genome %in% c("mm10", "mm9", "rn6")){
       dbs %>%
         gsub(pattern = "Human", replacement = "Mouse")
@@ -746,29 +745,29 @@ if(genome != "TAIR10" & genome != "TAIR9" & is.null(resPath)){
                "GO_Molecular_Function_2018",
                "KEGG_2019")
     }
-    
+
     sigRegions %>%
       DMRichR::annotateRegions(TxDb = TxDb,
                                annoDb = annoDb,
                                resPath = resPath,
-                               genome = genome) %>%  
+                               genome = genome) %>%
       dplyr::select(geneSymbol) %>%
       purrr::flatten() %>%
-      enrichR::enrichr(dbs) %>% 
-      purrr::set_names(names(.) %>% stringr::str_trunc(31, ellipsis = "")) %T>% # %>% 
+      enrichR::enrichr(dbs) %>%
+      purrr::set_names(names(.) %>% stringr::str_trunc(31, ellipsis = "")) %T>% # %>%
       #purrr::map(~ dplyr::filter(., Adjusted.P.value < 0.05)) %T>%
       openxlsx::write.xlsx(file = glue::glue("Ontologies/enrichr.xlsx")) %>%
       DMRichR::slimGO(tool = "enrichR",
                       annoDb = annoDb,
                       plots = FALSE) %T>%
-      openxlsx::write.xlsx(file = glue::glue("Ontologies/enrichr_slimmed_results.xlsx")) %>% 
-      DMRichR::GOplot() %>% 
+      openxlsx::write.xlsx(file = glue::glue("Ontologies/enrichr_slimmed_results.xlsx")) %>%
+      DMRichR::GOplot() %>%
       ggplot2::ggsave(glue::glue("Ontologies/enrichr_plot.pdf"),
                       plot = .,
                       device = NULL,
                       height = 8.5,
                       width = 10)
-    
+
   },
   error = function(error_condition) {
     print(glue::glue("Warning: enrichR did not finish. \\
