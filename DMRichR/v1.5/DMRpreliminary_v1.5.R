@@ -577,7 +577,8 @@ DMRich <- function(x){
   dmrList[x] %>% 
     DMRichR::DMRichGenic(regions = regions,
                          TxDb = TxDb,
-                         annoDb = annoDb) %T>%
+                         annoDb = annoDb,
+                         genome = genome) %T>%
     openxlsx::write.xlsx(file = glue::glue("DMRichments/{names(dmrList)[x]}_genic_enrichments.xlsx")) %>% 
     DMRichR::DMRichPlot(type = "genic") %>% 
     ggplot2::ggsave(glue::glue("DMRichments/{names(dmrList)[x]}_genic_enrichments.pdf"),
