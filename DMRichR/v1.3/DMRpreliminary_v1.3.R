@@ -19,12 +19,12 @@ RESPATH <- "/home/shli842i/p_dna15/data/"
 # link R packages installed in temp directory on cluster
 .libPaths(LIBPATH)
 
-# remotes::install_local(
-# "/home/shli842i/DMRichR",
-# dependencies = FALSE,
-# upgrade = "never",
-# force = TRUE
-# )
+remotes::install_local(
+"/home/shli842i/DMRichR",
+dependencies = FALSE,
+upgrade = "never",
+force = TRUE
+)
 # 
 # remotes::install_local(
 #   "/home/shli842i/TxDb.Mmusculus.UCSC.mm39.knownGene",
@@ -57,69 +57,70 @@ EnsDb = FALSE
 resPath = RESPATH
 dataPath = DATADIR
 sampleinfoPath = SAMPLEINFO_PATH
+contrast = c("WT", "KO")
 
 # -------------------------------------------------------------------------
-# 
-# # Check dmrseq version 
-# if(Biobase::package.version("dmrseq") %>%
-#    stringr::str_remove("1.") %>%
-#    as.numeric() < 7.3){
-#   warning(paste("Your version of dmrseq is out of date and contains a bug.",
-#                 "This bug won't affect the DMRichR run but could affect your custom follow up analyses.",
-#                 "See the install section of the DMRichR README for the code to manually update.",
-#                 "Read more about the issue: https://github.com/kdkorthauer/dmrseq/issues/37"))
-# }
-# 
-# # Set options
-# options(scipen = 999)
-# options(readr.num_columns = 0)
-# 
-# # Check for requirements (commented out to allow all genomes as long as genome files are available in resPath)
-# # stopifnot(genome %in% c("hg38", "hg19", "mm10", "mm9", "rheMac10",
-# #                         "rheMac8", "rn6", "danRer11", "galGal6",
-# #                         "bosTau9", "panTro6", "dm6", "susScr11",
-# #                         "canFam3", "TAIR10", "TAIR9"))
-# stopifnot(!is.null(testCovariate))
-# stopifnot(coverage >= 1)
-# 
-# # Check for more permutations than samples
-# nSamples <- openxlsx::read.xlsx("sample_info.xlsx", colNames = TRUE) %>%
-#   nrow()
-# 
-# if(nSamples < maxPerms){
-#   print(glue::glue("Warning: You have requested {maxPerms} permutations for the DMR analysis, \\
-#                    which is more than the {nSamples} samples you have. \\
-#                    maxPerms will now be changed to {nSamples}."))
-#   maxPerms <- nSamples
-# }
-# 
-# if(nSamples < maxBlockPerms){
-#   print(glue::glue("Warning: You have requested {maxBlockPerms} permutations for the block analysis, \\
-#                    which is more than the {nSamples} samples you have. \\
-#                    maxBlockPerms will now be changed to {nSamples}."))
-#   maxBlockPerms <- nSamples
-# }
-# 
-# rm(nSamples)
-# 
-# # Print
-# print(glue::glue("genome = {genome}"))
-# print(glue::glue("coverage = {coverage}"))
-# print(glue::glue("perGroup = {perGroup}"))
-# print(glue::glue("minCpGs = {minCpGs}"))
-# print(glue::glue("maxPerms = {maxPerms}"))
-# print(glue::glue("maxBlockPerms = {maxBlockPerms}"))
-# print(glue::glue("cutoff = {cutoff}"))
-# print(glue::glue("testCovariate = {testCovariate}"))
-# print(glue::glue("adjustCovariate = {adjustCovariate}"))
-# print(glue::glue("matchCovariate = {matchCovariate}"))
-# print(glue::glue("cores = {cores}"))
-# print(glue::glue("sexCheck = {sexCheck}"))
-# print(glue::glue("EnsDb = {EnsDb}"))
-# print(glue::glue("GOfuncR = {GOfuncR}"))
-# 
-# # Setup annotation databases ----------------------------------------------
-# 
+
+# Check dmrseq version
+if(Biobase::package.version("dmrseq") %>%
+   stringr::str_remove("1.") %>%
+   as.numeric() < 7.3){
+  warning(paste("Your version of dmrseq is out of date and contains a bug.",
+                "This bug won't affect the DMRichR run but could affect your custom follow up analyses.",
+                "See the install section of the DMRichR README for the code to manually update.",
+                "Read more about the issue: https://github.com/kdkorthauer/dmrseq/issues/37"))
+}
+
+# Set options
+options(scipen = 999)
+options(readr.num_columns = 0)
+
+# Check for requirements (commented out to allow all genomes as long as genome files are available in resPath)
+# stopifnot(genome %in% c("hg38", "hg19", "mm10", "mm9", "rheMac10",
+#                         "rheMac8", "rn6", "danRer11", "galGal6",
+#                         "bosTau9", "panTro6", "dm6", "susScr11",
+#                         "canFam3", "TAIR10", "TAIR9"))
+stopifnot(!is.null(testCovariate))
+stopifnot(coverage >= 1)
+
+# Check for more permutations than samples
+nSamples <- openxlsx::read.xlsx("sample_info.xlsx", colNames = TRUE) %>%
+  nrow()
+
+if(nSamples < maxPerms){
+  print(glue::glue("Warning: You have requested {maxPerms} permutations for the DMR analysis, \\
+                   which is more than the {nSamples} samples you have. \\
+                   maxPerms will now be changed to {nSamples}."))
+  maxPerms <- nSamples
+}
+
+if(nSamples < maxBlockPerms){
+  print(glue::glue("Warning: You have requested {maxBlockPerms} permutations for the block analysis, \\
+                   which is more than the {nSamples} samples you have. \\
+                   maxBlockPerms will now be changed to {nSamples}."))
+  maxBlockPerms <- nSamples
+}
+
+rm(nSamples)
+
+# Print
+print(glue::glue("genome = {genome}"))
+print(glue::glue("coverage = {coverage}"))
+print(glue::glue("perGroup = {perGroup}"))
+print(glue::glue("minCpGs = {minCpGs}"))
+print(glue::glue("maxPerms = {maxPerms}"))
+print(glue::glue("maxBlockPerms = {maxBlockPerms}"))
+print(glue::glue("cutoff = {cutoff}"))
+print(glue::glue("testCovariate = {testCovariate}"))
+print(glue::glue("adjustCovariate = {adjustCovariate}"))
+print(glue::glue("matchCovariate = {matchCovariate}"))
+print(glue::glue("cores = {cores}"))
+print(glue::glue("sexCheck = {sexCheck}"))
+print(glue::glue("EnsDb = {EnsDb}"))
+print(glue::glue("GOfuncR = {GOfuncR}"))
+
+# Setup annotation databases ----------------------------------------------
+
 cat("\n[DMRichR] Selecting annotation databases \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
 
 DMRichR::annotationDatabases(genome = genome,
@@ -131,26 +132,27 @@ dir.create("RData")
 settings_env <- ls(all = TRUE)
 save(list = settings_env, file = "RData/settings.RData")
 # load("RData/settings.RData")
-# 
-# # Load and process samples ------------------------------------------------
-# 
-# bs.filtered <- DMRichR::processBismark(files = list.files(path = dataPath,
-#                                                           pattern = "*.CpG_report.txt.gz",
-#                                                           full.names= TRUE),
-#                                        meta = openxlsx::read.xlsx(sampleinfoPath,
-#                                                                   colNames = TRUE) %>%
-#                                          dplyr::mutate_if(is.character, as.factor),
-#                                        testCovariate = testCovariate,
-#                                        adjustCovariate = adjustCovariate,
-#                                        matchCovariate = matchCovariate,
-#                                        coverage = coverage,
-#                                        cores = cores,
-#                                        perGroup = perGroup,
-#                                        sexCheck = sexCheck)
-# 
-# print(glue::glue("Saving Rdata..."))
-# save(bs.filtered, file = "RData/bismark.RData")
-load("RData/bismark.RData")
+#
+# Load and process samples ------------------------------------------------
+
+bs.filtered <- DMRichR::processBismark(files = list.files(path = dataPath,
+                                                          pattern = "*.CpG_report.txt.gz",
+                                                          full.names= TRUE),
+                                       meta = openxlsx::read.xlsx(sampleinfoPath,
+                                                                  colNames = TRUE) %>%
+                                         dplyr::mutate_if(is.character, as.factor),
+                                       testCovariate = testCovariate,
+                                       adjustCovariate = adjustCovariate,
+                                       matchCovariate = matchCovariate,
+                                       coverage = coverage,
+                                       cores = cores,
+                                       perGroup = perGroup,
+                                       sexCheck = sexCheck,
+                                         contrast = contrast)
+
+print(glue::glue("Saving Rdata..."))
+save(bs.filtered, file = "RData/bismark.RData")
+# load("RData/bismark.RData")
 
 print(glue::glue("Building annotations for plotting..."))
 if(is(TxDb, "TxDb")){
@@ -165,267 +167,267 @@ if(is(TxDb, "TxDb")){
   }
 }
 
-# 
-# # Background --------------------------------------------------------------
-# 
-# cat("\n[DMRichR] Getting bsseq background regions \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
-# dir.create("Extra")
-# 
-# DMRichR::getBackground(bs.filtered,
-#                        minNumRegion = minCpGs,
-#                        maxGap = 1000) %>% 
-#   write.table(file = "Extra/bsseq_background.csv",
-#               sep = ",",
-#               quote = FALSE,
-#               row.names = FALSE)
-# 
-# # Blocks ------------------------------------------------------------------
-# 
-# cat("\n[DMRichR] Testing for blocks with dmrseq \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
-# start_time <- Sys.time()
-# 
-# tryCatch({
-#   blocks <- dmrseq::dmrseq(bs = bs.filtered,
-#                            cutoff = cutoff,
-#                            maxPerms = maxBlockPerms,
-#                            testCovariate = testCovariate,
-#                            adjustCovariate = adjustCovariate,
-#                            matchCovariate = matchCovariate,
-#                            block = TRUE,
-#                            minInSpan = 500,
-#                            bpSpan = 5e4,
-#                            maxGapSmooth = 1e6,
-#                            maxGap = 5e3,
-#                            minNumRegion = (minCpGs*2),
-#                            BPPARAM = BiocParallel::MulticoreParam(workers = cores)
-#   )
-#   
-#   print(glue::glue("Selecting significant blocks..."))
-#   
-#   if(length(blocks) != 0){
-#     blocks <- blocks %>%
-#       plyranges::mutate(direction = dplyr::case_when(stat > 0 ~ "Hypermethylated",
-#                                                      stat < 0 ~ "Hypomethylated"),
-#                         difference = round(beta/pi *100))
-#   }
-#   
-#   if(sum(blocks$qval < 0.05) == 0 & sum(blocks$pval < 0.05) != 0){
-#     sigBlocks <- blocks %>%
-#       plyranges::filter(pval < 0.05)
-#   }else if(sum(blocks$qval < 0.05) >= 1){
-#     sigBlocks <- blocks %>%
-#       plyranges::filter(qval < 0.05)
-#   }else if(sum(blocks$pval < 0.05) == 0 & length(blocks) != 0){
-#     glue::glue("No significant blocks detected in {length(blocks)} background blocks")
-#   }else if(length(blocks) == 0){
-#     glue::glue("No background blocks detected")
-#   }
-#   
-#   if(length(blocks) != 0){
-#     print(glue::glue("Exporting block and background information..."))
-#     
-#     dir.create("Blocks")
-#     gr2bed(blocks, "Blocks/backgroundBlocks.bed")
-#     if(sum(blocks$pval < 0.05) > 0){
-#       print(glue::glue("{length(sigBlocks)} significant blocks of differential methylation in {length(blocks)} background blocks"))
-#       gr2bed(sigBlocks, "Blocks/blocks.bed")
-#       
-#       print(glue::glue("Annotating and plotting blocks..."))
-#       pdf("Blocks/Blocks.pdf", height = 7.50, width = 11.50)
-#       dmrseq::plotDMRs(bs.filtered,
-#                        regions = sigBlocks,
-#                        testCovariate = testCovariate,
-#                        annoTrack = annoTrack,
-#                        regionCol = "#FF00001A",
-#                        qval = FALSE,
-#                        stat = FALSE)
-#       dev.off()
-#     }
-#   }
-#   
-#   print(glue::glue("Blocks timing..."))
-#   end_time <- Sys.time()
-#   end_time - start_time
-#   
-#   # Annotate blocks with gene symbols ---------------------------------------
-#   
-#   if(length(blocks) != 0){
-#     if(sum(blocks$pval < 0.05) > 0){
-#       print(glue::glue("Annotating blocks with gene symbols..."))
-#       sigBlocks %>%
-#         DMRichR::annotateRegions(TxDb = TxDb,
-#                                  annoDb = annoDb,
-#                                  resPath = resPath,
-#                                  genome = genome) %T>%
-#         DMRichR::DMReport(regions = blocks,
-#                           bs.filtered = bs.filtered,
-#                           coverage = coverage,
-#                           name = "blockReport") %>% 
-#         openxlsx::write.xlsx(file = "Blocks/Blocks_annotated.xlsx")
-#     }
-#     
-#     print(glue::glue("Annotating background blocks with gene symbols..."))
-#     blocks %>%
-#       DMRichR::annotateRegions(TxDb = TxDb,
-#                                annoDb = annoDb,
-#                                resPath=resPath,
-#                                genome = genome) %>% 
-#       openxlsx::write.xlsx(file = "Blocks/background_blocks_annotated.xlsx")
-#   }
-#   
-#   print(glue::glue("Saving RData..."))
-#   save(blocks, file = "RData/Blocks.RData")
-#   
-# },
-# error = function(error_condition) {
-#   print(glue::glue("Warning: Block analysis has produced an error"))
-# })
 
-load("RData/Blocks.RData")
+# Background --------------------------------------------------------------
+
+cat("\n[DMRichR] Getting bsseq background regions \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
+dir.create("Extra")
+
+DMRichR::getBackground(bs.filtered,
+                       minNumRegion = minCpGs,
+                       maxGap = 1000) %>%
+  write.table(file = "Extra/bsseq_background.csv",
+              sep = ",",
+              quote = FALSE,
+              row.names = FALSE)
+
+# Blocks ------------------------------------------------------------------
+
+cat("\n[DMRichR] Testing for blocks with dmrseq \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
+start_time <- Sys.time()
+
+tryCatch({
+  blocks <- dmrseq::dmrseq(bs = bs.filtered,
+                           cutoff = cutoff,
+                           maxPerms = maxBlockPerms,
+                           testCovariate = testCovariate,
+                           adjustCovariate = adjustCovariate,
+                           matchCovariate = matchCovariate,
+                           block = TRUE,
+                           minInSpan = 500,
+                           bpSpan = 5e4,
+                           maxGapSmooth = 1e6,
+                           maxGap = 5e3,
+                           minNumRegion = (minCpGs*2),
+                           BPPARAM = BiocParallel::MulticoreParam(workers = cores)
+  )
+
+  print(glue::glue("Selecting significant blocks..."))
+
+  if(length(blocks) != 0){
+    blocks <- blocks %>%
+      plyranges::mutate(direction = dplyr::case_when(stat > 0 ~ "Hypermethylated",
+                                                     stat < 0 ~ "Hypomethylated"),
+                        difference = round(beta/pi *100))
+  }
+
+  if(sum(blocks$qval < 0.05) == 0 & sum(blocks$pval < 0.05) != 0){
+    sigBlocks <- blocks %>%
+      plyranges::filter(pval < 0.05)
+  }else if(sum(blocks$qval < 0.05) >= 1){
+    sigBlocks <- blocks %>%
+      plyranges::filter(qval < 0.05)
+  }else if(sum(blocks$pval < 0.05) == 0 & length(blocks) != 0){
+    glue::glue("No significant blocks detected in {length(blocks)} background blocks")
+  }else if(length(blocks) == 0){
+    glue::glue("No background blocks detected")
+  }
+
+  if(length(blocks) != 0){
+    print(glue::glue("Exporting block and background information..."))
+
+    dir.create("Blocks")
+    gr2bed(blocks, "Blocks/backgroundBlocks.bed")
+    if(sum(blocks$pval < 0.05) > 0){
+      print(glue::glue("{length(sigBlocks)} significant blocks of differential methylation in {length(blocks)} background blocks"))
+      gr2bed(sigBlocks, "Blocks/blocks.bed")
+
+      print(glue::glue("Annotating and plotting blocks..."))
+      pdf("Blocks/Blocks.pdf", height = 7.50, width = 11.50)
+      dmrseq::plotDMRs(bs.filtered,
+                       regions = sigBlocks,
+                       testCovariate = testCovariate,
+                       annoTrack = annoTrack,
+                       regionCol = "#FF00001A",
+                       qval = FALSE,
+                       stat = FALSE)
+      dev.off()
+    }
+  }
+
+  print(glue::glue("Blocks timing..."))
+  end_time <- Sys.time()
+  end_time - start_time
+
+  # Annotate blocks with gene symbols ---------------------------------------
+
+  if(length(blocks) != 0){
+    if(sum(blocks$pval < 0.05) > 0){
+      print(glue::glue("Annotating blocks with gene symbols..."))
+      sigBlocks %>%
+        DMRichR::annotateRegions(TxDb = TxDb,
+                                 annoDb = annoDb,
+                                 resPath = resPath,
+                                 genome = genome) %T>%
+        DMRichR::DMReport(regions = blocks,
+                          bs.filtered = bs.filtered,
+                          coverage = coverage,
+                          name = "blockReport") %>%
+        openxlsx::write.xlsx(file = "Blocks/Blocks_annotated.xlsx")
+    }
+
+    print(glue::glue("Annotating background blocks with gene symbols..."))
+    blocks %>%
+      DMRichR::annotateRegions(TxDb = TxDb,
+                               annoDb = annoDb,
+                               resPath=resPath,
+                               genome = genome) %>%
+      openxlsx::write.xlsx(file = "Blocks/background_blocks_annotated.xlsx")
+  }
+
+  print(glue::glue("Saving RData..."))
+  save(blocks, file = "RData/Blocks.RData")
+
+},
+error = function(error_condition) {
+  print(glue::glue("Warning: Block analysis has produced an error"))
+})
+
+# load("RData/Blocks.RData")
 
 # DMRs --------------------------------------------------------------------
 
-# cat("\n[DMRichR] Testing for DMRs with dmrseq \t\t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
-# start_time <- Sys.time()
-# 
-# regions <- dmrseq::dmrseq(bs = bs.filtered,
-#                           cutoff = cutoff,
-#                           minNumRegion = minCpGs,
-#                           maxPerms = maxPerms,
-#                           testCovariate = testCovariate,
-#                           adjustCovariate = adjustCovariate,
-#                           matchCovariate = matchCovariate,
-#                           BPPARAM = BiocParallel::MulticoreParam(workers = cores)
-# )
-# 
-# print(glue::glue("Selecting significant DMRs..."))
-# 
-# regions <- regions %>% 
-#   plyranges::mutate(direction = dplyr::case_when(stat > 0 ~ "Hypermethylated",
-#                                                  stat < 0 ~ "Hypomethylated"),
-#                     difference = round(beta/pi *100))
-# 
-# if(sum(regions$qval < 0.05) < 100 & sum(regions$pval < 0.05) != 0){
-#   sigRegions <- regions %>%
-#     plyranges::filter(pval < 0.05)
-# }else if(sum(regions$qval < 0.05) >= 100){
-#   sigRegions <- regions %>%
-#     plyranges::filter(qval < 0.05)
-# }else if(sum(regions$pval < 0.05) == 0){
-#   stop(glue::glue("No significant DMRs detected in {length(regions)} background regions"))
-# }
-# 
-# 
-# print(glue::glue("Exporting DMR and background region information..."))
-# dir.create("DMRs")
-# gr2bed(sigRegions, "DMRs/DMRs.bed")
-# gr2bed(regions, "DMRs/backgroundRegions.bed")
-# 
-# if(sum(sigRegions$stat > 0) > 0 & sum(sigRegions$stat < 0) > 0){
-#   
-#   print(glue::glue("Summary: There are {tidySigRegions} DMRs \\
-#              ({tidyHyper}% hypermethylated, {tidyHypo}% hypomethylated) \\
-#              from {tidyRegions} background regions consisting of {tidyCpGs} CpGs \\
-#              assayed at {coverage}x coverage", 
-#                    tidySigRegions = length(sigRegions),
-#                    tidyHyper = round(sum(sigRegions$stat > 0) / length(sigRegions), digits = 2)*100,
-#                    tidyHypo = round(sum(sigRegions$stat < 0) / length(sigRegions), digits = 2)*100,
-#                    tidyRegions = length(regions),
-#                    tidyCpGs = nrow(bs.filtered)))
-# }
-# 
-# print(glue::glue("DMR timing..."))
-# end_time <- Sys.time()
-# end_time - start_time
-# 
-# print(glue::glue("Saving Rdata..."))
-# save(regions, sigRegions, file = "RData/DMRs.RData")
+cat("\n[DMRichR] Testing for DMRs with dmrseq \t\t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
+start_time <- Sys.time()
 
-load("RData/DMRs.RData")
+regions <- dmrseq::dmrseq(bs = bs.filtered,
+                          cutoff = cutoff,
+                          minNumRegion = minCpGs,
+                          maxPerms = maxPerms,
+                          testCovariate = testCovariate,
+                          adjustCovariate = adjustCovariate,
+                          matchCovariate = matchCovariate,
+                          BPPARAM = BiocParallel::MulticoreParam(workers = cores)
+)
 
-# print(glue::glue("Annotating DMRs and plotting..."))
-# 
-# pdf("DMRs/DMRs.pdf", height = 4, width = 8)
-# tryCatch({
-#   DMRichR::plotDMRs2(bs.filtered,
-#                      regions = sigRegions,
-#                      testCovariate = testCovariate,
-#                      extend = (end(sigRegions) - start(sigRegions) + 1)*2,
-#                      addRegions = sigRegions,
-#                      annoTrack = annoTrack,
-#                      regionCol = "#FF00001A",
-#                      lwd = 2,
-#                      qval = FALSE,
-#                      stat = FALSE,
-#                      horizLegend = FALSE)
-# },
-# error = function(error_condition) {
-#   print(glue::glue("Warning: One (or more) of your DMRs can't be plotted, \\
-#                       try again later by manually loading R Data and subsetting sigRegions"))
-# })
-# dev.off()
+print(glue::glue("Selecting significant DMRs..."))
+
+regions <- regions %>%
+  plyranges::mutate(direction = dplyr::case_when(stat > 0 ~ "Hypermethylated",
+                                                 stat < 0 ~ "Hypomethylated"),
+                    difference = round(beta/pi *100))
+
+if(sum(regions$qval < 0.05) < 100 & sum(regions$pval < 0.05) != 0){
+  sigRegions <- regions %>%
+    plyranges::filter(pval < 0.05)
+}else if(sum(regions$qval < 0.05) >= 100){
+  sigRegions <- regions %>%
+    plyranges::filter(qval < 0.05)
+}else if(sum(regions$pval < 0.05) == 0){
+  stop(glue::glue("No significant DMRs detected in {length(regions)} background regions"))
+}
+
+
+print(glue::glue("Exporting DMR and background region information..."))
+dir.create("DMRs")
+gr2bed(sigRegions, "DMRs/DMRs.bed")
+gr2bed(regions, "DMRs/backgroundRegions.bed")
+
+if(sum(sigRegions$stat > 0) > 0 & sum(sigRegions$stat < 0) > 0){
+
+  print(glue::glue("Summary: There are {tidySigRegions} DMRs \\
+             ({tidyHyper}% hypermethylated, {tidyHypo}% hypomethylated) \\
+             from {tidyRegions} background regions consisting of {tidyCpGs} CpGs \\
+             assayed at {coverage}x coverage",
+                   tidySigRegions = length(sigRegions),
+                   tidyHyper = round(sum(sigRegions$stat > 0) / length(sigRegions), digits = 2)*100,
+                   tidyHypo = round(sum(sigRegions$stat < 0) / length(sigRegions), digits = 2)*100,
+                   tidyRegions = length(regions),
+                   tidyCpGs = nrow(bs.filtered)))
+}
+
+print(glue::glue("DMR timing..."))
+end_time <- Sys.time()
+end_time - start_time
+
+print(glue::glue("Saving Rdata..."))
+save(regions, sigRegions, file = "RData/DMRs.RData")
+
+# load("RData/DMRs.RData")
+
+print(glue::glue("Annotating DMRs and plotting..."))
+
+pdf("DMRs/DMRs.pdf", height = 4, width = 8)
+tryCatch({
+  DMRichR::plotDMRs2(bs.filtered,
+                     regions = sigRegions,
+                     testCovariate = testCovariate,
+                     extend = (end(sigRegions) - start(sigRegions) + 1)*2,
+                     addRegions = sigRegions,
+                     annoTrack = annoTrack,
+                     regionCol = "#FF00001A",
+                     lwd = 2,
+                     qval = FALSE,
+                     stat = FALSE,
+                     horizLegend = FALSE)
+},
+error = function(error_condition) {
+  print(glue::glue("Warning: One (or more) of your DMRs can't be plotted, \\
+                      try again later by manually loading R Data and subsetting sigRegions"))
+})
+dev.off()
 
 # Annotate DMRs with gene symbols -----------------------------------------
 
-# cat("\n[DMRichR] Annotating DMRs with gene symbols \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
-# 
-# sigRegions %>%
-#   DMRichR::annotateRegions(TxDb = TxDb,
-#                            annoDb = annoDb,
-#                            resPath = resPath,
-#                            genome = genome) %T>%
-#   DMRichR::DMReport(regions = regions,
-#                     bs.filtered = bs.filtered,
-#                     coverage = coverage,
-#                     name = "DMReport") %>% 
-#   openxlsx::write.xlsx(file = "DMRs/DMRs_annotated.xlsx")
-# 
-# print(glue::glue("Annotating background regions with gene symbols..."))
-# regions %>%
-#   DMRichR::annotateRegions(TxDb = TxDb,
-#                            annoDb = annoDb,
-#                            resPath = resPath,
-#                            genome = genome) %>% 
-#   openxlsx::write.xlsx(file = "DMRs/background_annotated.xlsx")
+cat("\n[DMRichR] Annotating DMRs with gene symbols \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
+
+sigRegions %>%
+  DMRichR::annotateRegions(TxDb = TxDb,
+                           annoDb = annoDb,
+                           resPath = resPath,
+                           genome = genome) %T>%
+  DMRichR::DMReport(regions = regions,
+                    bs.filtered = bs.filtered,
+                    coverage = coverage,
+                    name = "DMReport") %>%
+  openxlsx::write.xlsx(file = "DMRs/DMRs_annotated.xlsx")
+
+print(glue::glue("Annotating background regions with gene symbols..."))
+regions %>%
+  DMRichR::annotateRegions(TxDb = TxDb,
+                           annoDb = annoDb,
+                           resPath = resPath,
+                           genome = genome) %>%
+  openxlsx::write.xlsx(file = "DMRs/background_annotated.xlsx")
 
 # Individual smoothed values ----------------------------------------------
-# 
-# cat("\n[DMRichR] Smoothing individual methylation values \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
-# start_time <- Sys.time()
-# 
-# bs.filtered.bsseq <- bsseq::BSmooth(bs.filtered,
-#                                     BPPARAM = BiocParallel::MulticoreParam(workers = cores,
-#                                                                            progressbar = TRUE))
-# 
-# # Drop chrY in Rat only due to poor quality (some CpGs in females map to Y)
-# if(genome == "rn6"){
-#   bs.filtered.bsseq <- GenomeInfoDb::dropSeqlevels(bs.filtered.bsseq,
-#                                                    "chrY",
-#                                                    pruning.mode = "coarse")
-#   GenomeInfoDb::seqlevels(bs.filtered.bsseq)
-# }
-# 
-# bs.filtered.bsseq
-# 
-# print(glue::glue("Extracting individual smoothed methylation values of DMRs..."))
-# bs.filtered.bsseq %>%
-#   DMRichR::smooth2txt(regions = sigRegions,
-#                       txt = "DMRs/DMR_individual_smoothed_methylation.txt")
-# 
-# print(glue::glue("Extracting individual smoothed methylation values of background regions..."))
-# bs.filtered.bsseq %>%
-#   DMRichR::smooth2txt(regions = regions,
-#                       txt = "DMRs/background_region_individual_smoothed_methylation.txt")
-# 
-# print(glue::glue("Individual smoothing timing..."))
-# end_time <- Sys.time()
-# end_time - start_time
-# 
-# print(glue::glue("Saving Rdata..."))
-# save(bs.filtered.bsseq,
-#      file = "RData/bsseq.RData")
 
-load("RData/bsseq.RData")
+cat("\n[DMRichR] Smoothing individual methylation values \t\t", format(Sys.time(), "%d-%m-%Y %X"), "\n")
+start_time <- Sys.time()
+
+bs.filtered.bsseq <- bsseq::BSmooth(bs.filtered,
+                                    BPPARAM = BiocParallel::MulticoreParam(workers = cores,
+                                                                           progressbar = TRUE))
+
+# Drop chrY in Rat only due to poor quality (some CpGs in females map to Y)
+if(genome == "rn6"){
+  bs.filtered.bsseq <- GenomeInfoDb::dropSeqlevels(bs.filtered.bsseq,
+                                                   "chrY",
+                                                   pruning.mode = "coarse")
+  GenomeInfoDb::seqlevels(bs.filtered.bsseq)
+}
+
+bs.filtered.bsseq
+
+print(glue::glue("Extracting individual smoothed methylation values of DMRs..."))
+bs.filtered.bsseq %>%
+  DMRichR::smooth2txt(regions = sigRegions,
+                      txt = "DMRs/DMR_individual_smoothed_methylation.txt")
+
+print(glue::glue("Extracting individual smoothed methylation values of background regions..."))
+bs.filtered.bsseq %>%
+  DMRichR::smooth2txt(regions = regions,
+                      txt = "DMRs/background_region_individual_smoothed_methylation.txt")
+
+print(glue::glue("Individual smoothing timing..."))
+end_time <- Sys.time()
+end_time - start_time
+
+print(glue::glue("Saving Rdata..."))
+save(bs.filtered.bsseq,
+     file = "RData/bsseq.RData")
+
+# load("RData/bsseq.RData")
 
 # ChromHMM and Reference Epigenomes ---------------------------------------
 
