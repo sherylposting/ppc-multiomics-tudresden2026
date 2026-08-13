@@ -18,17 +18,15 @@ SnowParam(8)
 
 # global variables - check these ------------------------------------------
 
-RNA_PATH <- "V:/MARIA/bfx2557_RNA_seq_E14.5_Katrin_no_trimming/bfx2557_all raw files/de-analysis_three_samples_each/data/bfx2557.deseq-results.separate.de-expl.xlsx"
+RNA_PATH <- "V:/MARIA/Sheryl/integration_results/virtual_KO/virtual_KO_df.RData"
 
 ATAC_PATH <- "V:/MARIA/Sheryl/atac_seq_results/E14.5/diffbind/all_ATAC_diffgenes.E14.5.tsv"
 
 EM_PATH <- "V:/MARIA/Sheryl/DMRichR_results/260724_v1.3-loosecutoff/DMRs/DMRs_annotated.xlsx"
 
-OUTPUT_DIR <- "V:/MARIA/Sheryl/integration_results/rGREAT_results"
+OUTPUT_DIR <- "V:/MARIA/Sheryl/integration_results/virtual_KO"
 
 ANTHONY_GSEA_PATH <- "V:/MARIA/Sheryl/integration_results/R_scripts/custom_gene_sets_GSEA_Anthony_FIXED.xlsx"
-
-# -------------------------------------------------------------------------
 
 # load ATAC seq results
 atac_df <- read.table(ATAC_PATH)
@@ -37,7 +35,8 @@ atac_df <- read.table(ATAC_PATH)
 em_df <- read_xlsx(EM_PATH)
 
 # load RNA seq results
-rna_df <- read_xlsx(RNA_PATH, sheet = "3_Cond_knock_out_v_wild_type_F5")
+load(RNA_PATH)
+rna_df <- res
 
 # limit to promoters
 atac_promoters <- atac_df %>%
@@ -59,7 +58,7 @@ anthony_gsea <- anthony_gsea %>%
 # load ref genome
 txdb <- TxDb.Mmusculus.UCSC.mm39.knownGene
 
-# prepare gene set granges object -----------------------------------------
+# prepare custom gene set granges object -----------------------------------------
 
 # Gene ranges; names are Entrez gene IDs
 gene_gr <- genes(txdb)
