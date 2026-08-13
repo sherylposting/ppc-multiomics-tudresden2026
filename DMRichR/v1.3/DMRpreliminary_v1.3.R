@@ -19,12 +19,12 @@ RESPATH <- "/home/shli842i/p_dna15/data/"
 # link R packages installed in temp directory on cluster
 .libPaths(LIBPATH)
 
-remotes::install_local(
-"/home/shli842i/DMRichR",
-dependencies = FALSE,
-upgrade = "never",
-force = TRUE
-)
+# remotes::install_local(
+# "/home/shli842i/DMRichR",
+# dependencies = FALSE,
+# upgrade = "never",
+# force = TRUE
+# )
 # 
 # remotes::install_local(
 #   "/home/shli842i/TxDb.Mmusculus.UCSC.mm39.knownGene",
@@ -60,64 +60,64 @@ sampleinfoPath = SAMPLEINFO_PATH
 contrast = c("WT", "KO")
 
 # -------------------------------------------------------------------------
-
-# Check dmrseq version
-if(Biobase::package.version("dmrseq") %>%
-   stringr::str_remove("1.") %>%
-   as.numeric() < 7.3){
-  warning(paste("Your version of dmrseq is out of date and contains a bug.",
-                "This bug won't affect the DMRichR run but could affect your custom follow up analyses.",
-                "See the install section of the DMRichR README for the code to manually update.",
-                "Read more about the issue: https://github.com/kdkorthauer/dmrseq/issues/37"))
-}
-
-# Set options
-options(scipen = 999)
-options(readr.num_columns = 0)
-
-# Check for requirements (commented out to allow all genomes as long as genome files are available in resPath)
-# stopifnot(genome %in% c("hg38", "hg19", "mm10", "mm9", "rheMac10",
-#                         "rheMac8", "rn6", "danRer11", "galGal6",
-#                         "bosTau9", "panTro6", "dm6", "susScr11",
-#                         "canFam3", "TAIR10", "TAIR9"))
-stopifnot(!is.null(testCovariate))
-stopifnot(coverage >= 1)
-
-# Check for more permutations than samples
-nSamples <- openxlsx::read.xlsx("sample_info.xlsx", colNames = TRUE) %>%
-  nrow()
-
-if(nSamples < maxPerms){
-  print(glue::glue("Warning: You have requested {maxPerms} permutations for the DMR analysis, \\
-                   which is more than the {nSamples} samples you have. \\
-                   maxPerms will now be changed to {nSamples}."))
-  maxPerms <- nSamples
-}
-
-if(nSamples < maxBlockPerms){
-  print(glue::glue("Warning: You have requested {maxBlockPerms} permutations for the block analysis, \\
-                   which is more than the {nSamples} samples you have. \\
-                   maxBlockPerms will now be changed to {nSamples}."))
-  maxBlockPerms <- nSamples
-}
-
-rm(nSamples)
-
-# Print
-print(glue::glue("genome = {genome}"))
-print(glue::glue("coverage = {coverage}"))
-print(glue::glue("perGroup = {perGroup}"))
-print(glue::glue("minCpGs = {minCpGs}"))
-print(glue::glue("maxPerms = {maxPerms}"))
-print(glue::glue("maxBlockPerms = {maxBlockPerms}"))
-print(glue::glue("cutoff = {cutoff}"))
-print(glue::glue("testCovariate = {testCovariate}"))
-print(glue::glue("adjustCovariate = {adjustCovariate}"))
-print(glue::glue("matchCovariate = {matchCovariate}"))
-print(glue::glue("cores = {cores}"))
-print(glue::glue("sexCheck = {sexCheck}"))
-print(glue::glue("EnsDb = {EnsDb}"))
-print(glue::glue("GOfuncR = {GOfuncR}"))
+# 
+# # Check dmrseq version
+# if(Biobase::package.version("dmrseq") %>%
+#    stringr::str_remove("1.") %>%
+#    as.numeric() < 7.3){
+#   warning(paste("Your version of dmrseq is out of date and contains a bug.",
+#                 "This bug won't affect the DMRichR run but could affect your custom follow up analyses.",
+#                 "See the install section of the DMRichR README for the code to manually update.",
+#                 "Read more about the issue: https://github.com/kdkorthauer/dmrseq/issues/37"))
+# }
+# 
+# # Set options
+# options(scipen = 999)
+# options(readr.num_columns = 0)
+# 
+# # Check for requirements (commented out to allow all genomes as long as genome files are available in resPath)
+# # stopifnot(genome %in% c("hg38", "hg19", "mm10", "mm9", "rheMac10",
+# #                         "rheMac8", "rn6", "danRer11", "galGal6",
+# #                         "bosTau9", "panTro6", "dm6", "susScr11",
+# #                         "canFam3", "TAIR10", "TAIR9"))
+# stopifnot(!is.null(testCovariate))
+# stopifnot(coverage >= 1)
+# 
+# # Check for more permutations than samples
+# nSamples <- openxlsx::read.xlsx("sample_info.xlsx", colNames = TRUE) %>%
+#   nrow()
+# 
+# if(nSamples < maxPerms){
+#   print(glue::glue("Warning: You have requested {maxPerms} permutations for the DMR analysis, \\
+#                    which is more than the {nSamples} samples you have. \\
+#                    maxPerms will now be changed to {nSamples}."))
+#   maxPerms <- nSamples
+# }
+# 
+# if(nSamples < maxBlockPerms){
+#   print(glue::glue("Warning: You have requested {maxBlockPerms} permutations for the block analysis, \\
+#                    which is more than the {nSamples} samples you have. \\
+#                    maxBlockPerms will now be changed to {nSamples}."))
+#   maxBlockPerms <- nSamples
+# }
+# 
+# rm(nSamples)
+# 
+# # Print
+# print(glue::glue("genome = {genome}"))
+# print(glue::glue("coverage = {coverage}"))
+# print(glue::glue("perGroup = {perGroup}"))
+# print(glue::glue("minCpGs = {minCpGs}"))
+# print(glue::glue("maxPerms = {maxPerms}"))
+# print(glue::glue("maxBlockPerms = {maxBlockPerms}"))
+# print(glue::glue("cutoff = {cutoff}"))
+# print(glue::glue("testCovariate = {testCovariate}"))
+# print(glue::glue("adjustCovariate = {adjustCovariate}"))
+# print(glue::glue("matchCovariate = {matchCovariate}"))
+# print(glue::glue("cores = {cores}"))
+# print(glue::glue("sexCheck = {sexCheck}"))
+# print(glue::glue("EnsDb = {EnsDb}"))
+# print(glue::glue("GOfuncR = {GOfuncR}"))
 
 # Setup annotation databases ----------------------------------------------
 
@@ -134,25 +134,25 @@ save(list = settings_env, file = "RData/settings.RData")
 # load("RData/settings.RData")
 #
 # Load and process samples ------------------------------------------------
-
-bs.filtered <- DMRichR::processBismark(files = list.files(path = dataPath,
-                                                          pattern = "*.CpG_report.txt.gz",
-                                                          full.names= TRUE),
-                                       meta = openxlsx::read.xlsx(sampleinfoPath,
-                                                                  colNames = TRUE) %>%
-                                         dplyr::mutate_if(is.character, as.factor),
-                                       testCovariate = testCovariate,
-                                       adjustCovariate = adjustCovariate,
-                                       matchCovariate = matchCovariate,
-                                       coverage = coverage,
-                                       cores = cores,
-                                       perGroup = perGroup,
-                                       sexCheck = sexCheck,
-                                         contrast = contrast)
-
-print(glue::glue("Saving Rdata..."))
-save(bs.filtered, file = "RData/bismark.RData")
-# load("RData/bismark.RData")
+# 
+# bs.filtered <- DMRichR::processBismark(files = list.files(path = dataPath,
+#                                                           pattern = "*.CpG_report.txt.gz",
+#                                                           full.names= TRUE),
+#                                        meta = openxlsx::read.xlsx(sampleinfoPath,
+#                                                                   colNames = TRUE) %>%
+#                                          dplyr::mutate_if(is.character, as.factor),
+#                                        testCovariate = testCovariate,
+#                                        adjustCovariate = adjustCovariate,
+#                                        matchCovariate = matchCovariate,
+#                                        coverage = coverage,
+#                                        cores = cores,
+#                                        perGroup = perGroup,
+#                                        sexCheck = sexCheck,
+#                                          contrast = contrast)
+# 
+# print(glue::glue("Saving Rdata..."))
+# save(bs.filtered, file = "RData/bismark.RData")
+load("RData/bismark.RData")
 
 print(glue::glue("Building annotations for plotting..."))
 if(is(TxDb, "TxDb")){
@@ -281,6 +281,7 @@ tryCatch({
 },
 error = function(error_condition) {
   print(glue::glue("Warning: Block analysis has produced an error"))
+  message(conditionMessage(error_condition))
 })
 
 # load("RData/Blocks.RData")
@@ -860,4 +861,3 @@ writeLines(capture.output(sessionInfo()), "sessionInfo.txt")
 if(file.exists("Rplots.pdf")){file.remove("Rplots.pdf")}
 
 print(glue::glue("Done..."))
-}
