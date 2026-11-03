@@ -60,8 +60,3 @@ If it has successfully run, there will be a variety of results folders created b
 
 #### Running HOMER on HPC
 The scripts assume that you have installed HOMER using conda in your home directory (following these instructions: http://homer.ucsd.edu/homer/introduction/install.html). You will then have to run `run_HOMER.sbatch`. This will first run `HOMER_v1.R` in order to prepare the hyper- and hypo-methylated BED files, then it will run the HOMER tool from command line.
-  ├── methylDB : files needed for tabix DB
-  ├── .git
-  ├── .gitignore
-  └── README.md
-```
