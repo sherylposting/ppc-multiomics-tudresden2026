@@ -19,6 +19,7 @@ export LIBPATH=/data/horse/ws/shli842i-p_dna15_1/rpacks_4.2.1_DMRichR
 
 # set path to the custom DMRichR package. important!
 export DMRICHR_PACKAGE_PATH=/home/shli842i/DMRichR
+export TXDB_PACKAGE_PATH=/home/shli842i/TxDb.Mmusculus.UCSC.mm39.knownGene
 
 # important to load it --vanilla! something about the Rprofile maybe? causes the incorrect system library to be loaded
 Rscript --vanilla install-DMRichR.R
