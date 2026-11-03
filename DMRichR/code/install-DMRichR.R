@@ -1,6 +1,7 @@
 # these should be specified in the sbatch script
-LIBPATH <- Sys.getenv("LIBPATH", unset = "/data/horse/ws/shli842i-p_dna15_1/rpacks_4.2.1_DMRichR")
-DMRICHR_PACKAGE_PATH <- Sys.getenv("DMRICHR_PACKAGE_PATH", unset = "/home/shli842i/DMRichR")
+LIBPATH <- Sys.getenv("LIBPATH")
+DMRICHR_PACKAGE_PATH <- Sys.getenv("DMRICHR_PACKAGE_PATH")
+TXDB_PACKAGE_PATH <- Sys.getenv("TXDB_PACKAGE_PATH")
 
 CRAN_SNAPSHOT <- Sys.getenv("CRAN_SNAPSHOT", unset = "https://packagemanager.posit.co/cran/2023-04-25") # approx the last time DMRichR was updated
 
@@ -58,6 +59,16 @@ install.packages(
 
 remotes::install_local(
     DMRICHR_PACKAGE_PATH,
+    lib = LIBPATH,
+    dependencies = TRUE,
+    upgrade = "never",
+    force = TRUE,
+    repos = repos,
+    type = "source"
+)
+
+remotes::install_local(
+    TXDB_PACKAGE_PATH,
     lib = LIBPATH,
     dependencies = TRUE,
     upgrade = "never",
