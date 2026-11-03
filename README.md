@@ -40,7 +40,7 @@ See the original DMRichR documentation: https://www.benlaufer.com/DMRichR/articl
 The DMRichR package is no longer being maintained and is not compatible with the mm39 reference genome. As a result, you will need to implement some hacky solutions in order to run it with mm39...
 1. Assuming you will conduct the analysis in your home directory, clone this repo to your home directory: `git clone https://github.com/sherylposting/ppc-multiomics-tudresden2026`. It will also redundantly clone some of the other scripts that I used for the full project. If desired, you can delete those other directories using `rm -r other-directories`.
 2. I recommend setting up a new temporary workspace for yourself under `/data/horse/ws/` to hold the R package library and other temp files. The instructions for this can be found on the TU Dresden HPC compendium.
-3. Additionally, the initial installation process for the regular DMRichR was a HUGE hassle due to outdated version incompatibilities with all its dependencies. I literally copied my library over to `/projects/p_dna15/rpacks_4.2.1_DMRichR/`, so hopefully for future purposes, you can simply copy this over to your workspace.
+3. Additionally, the initial installation process for the regular DMRichR was a HUGE hassle due to outdated version incompatibilities with all its dependencies. I literally copied my library over to `/projects/p_dna15/rpacks_4.2.1_DMRichR/`, so hopefully for future purposes, you can simply copy this over to your workspace. Otherwise, a full list of the package metadata is available at the bottom of this README.
 4. In your home directory on the HPC, clone the DMRichR-mm39 repo: `git clone https://github.com/sherylposting/DMRichR-mm39`. This is a fork of DMRichR which I edited for compatibility with mm39. However, it is still limited to running on R 4.2.1 and Bioconductor 3.16, leaving a lot of room for improvement to bring it fully up to date. For example, it is not yet able to run ontology enrichments with mm39.
 5. Edit the `install-DMRichR.sbatch` script. You will have to edit LIBPATH to your new workspace (after copying rpacks_4.2.1.DMRichR/), and edit `export DMRICHR_PACKAGE_PATH` to the location of your cloned DMRichR-mm39 repo. Run this script to install it. It will then go on to run the `DMRichR/code/install-DMRichR.R` script. This is set up as a SLURM job due to the long time it will take to install all the dependencies, but theoretically you could also try doing this as an interactive session in RStudio, with `install-DMRichR.R` directly.
 6. You will also have to clone the source package for the mm39 TxDb reference genome: `wget https://bioconductor.org/packages/3.17/data/annotation/src/contrib/TxDb.Mmusculus.UCSC.mm39.knownGene_3.17.0.tar.gz`. Then, go into the source and edit the DESCRIPTION file. Change the line which says: `Depends: GenomicFeatures` to `Depends: GenomicFeatures (>= 1.50.4)`. This fix is necessary so as not to disrupt the version of GenomicFeatures used by DMRichR-mm39.
@@ -61,3 +61,127 @@ If it has successfully run, there will be a variety of results folders created b
 
 #### Running HOMER on HPC
 The scripts assume that you have installed HOMER using conda in your home directory (following these instructions: http://homer.ucsd.edu/homer/introduction/install.html). You will then have to run `run_HOMER.sbatch`. This will first run `HOMER_v1.R` in order to prepare the hyper- and hypo-methylated BED files, then it will run the HOMER tool from command line.
+
+#### Addendum: metadata of all R packages used for DMRichR on HPC
+```
+AnnotationDbi Version: 1.60.2
+AnnotationFilter Version: 1.22.0
+AnnotationHub Version: 3.6.0
+BSgenome.Mmusculus.UCSC.mm39 Version: 1.4.3
+BSgenome Version: 1.66.3
+Biobase Version: 2.58.0
+BiocFileCache Version: 2.6.1
+BiocGenerics Version: 0.44.0
+BiocIO Version: 1.8.0
+BiocManager Version: 1.30.27
+BiocParallel Version: 1.32.6
+BiocSingular Version: 1.14.0
+BiocVersion Version: 3.16.0
+Biostrings Version: 2.66.0
+CMplot Version: 4.3.1
+ChIPseeker Version: 1.34.1
+DESeq2 Version: 1.38.3
+DMRichR Version: 1.7.10
+DOSE Version: 3.24.2
+DelayedArray Version: 0.24.0
+DelayedMatrixStats Version: 1.20.0
+GEOquery Version: 2.66.0
+GO.db Version: 3.16.0
+GOSemSim Version: 2.24.0
+GOfuncR Version: 1.18.0
+GenomeInfoDb Version: 1.34.9
+GenomeInfoDbData Version: 1.2.9
+GenomicAlignments Version: 1.34.1
+GenomicFeatures Version: 1.50.4
+GenomicRanges Version: 1.50.2
+Glimma Version: 2.8.0
+HDF5Array Version: 1.26.0
+HDO.db Version: 0.99.1
+IRanges Version: 2.32.0
+KEGGREST Version: 1.38.0
+LOLA Version: 1.28.0
+Matrix Version: 1.5-4
+MatrixGenerics Version: 1.10.0
+PCAtools Version: 2.10.0
+PerformanceAnalytics Version: 2.0.4
+ProtGenerics Version: 1.30.0
+R2HTML Version: 2.3.3
+RBGL Version: 1.74.0
+Rhdf5lib Version: 1.20.0
+Rhtslib Version: 2.0.0
+Rsamtools Version: 2.14.0
+S4Vectors Version: 0.36.2
+ScaledMatrix Version: 1.6.0
+SummarizedExperiment Version: 1.28.0
+TxDb.Hsapiens.UCSC.hg19.knownGene Version: 3.2.2
+TxDb.Hsapiens.UCSC.hg38.knownGene Version: 3.16.0
+TxDb.Mmusculus.UCSC.mm39.knownGene Version: 3.17.1
+XVector Version: 0.38.0
+annotate Version: 1.76.0
+annotatr Version: 1.24.0
+beachmat Version: 2.14.2
+bigD Version: 0.2.0
+biocViews Version: 1.66.3
+biomaRt Version: 2.54.1
+bsseq Version: 1.34.0
+bumphunter Version: 1.40.0
+cli Version: 3.6.1
+dmrseq Version: 1.18.1
+dqrng Version: 0.3.0
+edgeR Version: 3.40.2
+emmeans Version: 1.8.5
+enrichR Version: 3.2
+enrichplot Version: 1.18.4
+ensembldb Version: 2.22.0
+estimability Version: 1.4.1
+fgsea Version: 1.24.0
+filelock Version: 1.0.2
+genefilter Version: 1.80.3
+geneplotter Version: 1.76.0
+ggnewscale Version: 0.4.8
+ggplot2 Version: 3.4.2
+ggtree Version: 3.6.2
+graph Version: 1.76.0
+gtable Version: 0.3.6
+hablar Version: 0.3.2
+illuminaio Version: 0.40.0
+interactiveDisplayBase Version: 1.36.0
+juicyjuice Version: 0.1.0
+lifecycle Version: 1.0.3
+limma Version: 3.54.2
+lsmeans Version: 2.30-0
+mapplots Version: 1.5.1
+minfi Version: 1.44.0
+multtest Version: 2.54.0
+org.Hs.eg.db Version: 3.16.0
+org.Mm.eg.db Version: 3.16.0
+plyranges Version: 1.18.0
+preprocessCore Version: 1.60.2
+qvalue Version: 2.30.0
+rGREAT Version: 2.0.2
+reactR Version: 0.4.4
+reactable Version: 0.4.4
+regioneR Version: 1.30.0
+renv Version: 1.2.3
+restfulr Version: 0.0.15
+rhdf5 Version: 2.42.1
+rhdf5filters Version: 1.10.1
+rlang Version: 1.1.0
+rrvgo Version: 1.10.0
+rsvd Version: 1.0.5
+rtracklayer Version: 1.58.0
+scales Version: 1.4.0
+scrime Version: 1.3.5
+sigFeature Version: 1.16.0
+siggenes Version: 1.72.0
+simpleCache Version: 0.4.2
+sitmo Version: 2.0.2
+sparseMatrixStats Version: 1.10.0
+timechange Version: 0.2.0
+treeio Version: 1.22.0
+treemap Version: 2.4-3
+umap Version: 0.2.10.0
+vctrs Version: 0.6.2
+wesanderson Version: 0.3.6
+zlibbioc Version: 1.44.0
+```
