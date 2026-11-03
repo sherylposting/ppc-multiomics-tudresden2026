@@ -53,6 +53,7 @@ If you have checked your logs files and the installation appears to have run suc
   - `VERSION` is an arbitrary version number which you can set to whatever you want. It will append to your working directory and create a new subfolder for the results. If you are running it for the first time you could name this something like "results" or "v1.0".
   - `WORKDIR` to your working directory. I used my home directory for this.
   - `SAMPLEINFO_PATH` to your sample_info.xlsx, which is required by DMRichR.
+  - `DATADIR` to the input Bismark CPG reports. By default, you can keep this as `/projects/p_dna15/data/EM_seq_files/CpG_reports`.
   - `RESPATH` is generally used by DMRichR to seek any additional resources that may be needed for annotation purposes, such as `mm39.cpgislands.bed`, which was downloaded from the UCSC genome browser. It will run fine with the resources that already exist in `/projects/p_dna15/data/`.
 - In `run_DMR.R`: you will also need to change the DMRichR-specific parameters, under the "DMRichR global parameters" section.
 
