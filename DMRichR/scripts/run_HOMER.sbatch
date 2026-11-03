@@ -30,7 +30,69 @@ echo "Finished at $(date)"
 source /software/rapids/r24.04/Miniconda3/23.10.0-1/etc/profile.d/conda.sh
 conda activate "$HOME/conda-envs/homer"
 
-bash "$HOME/p_dna15/DMRichR/HOMER.sh" \
+# HOMER transcription factor motif analysis for DMRichR
+# By Ben Laufer
+
+homerDMR(){
+    genome=${1}
+    cores=${2}
+    wd=${3}
+
+    cd "${wd}/HOMER" || exit 1
+
+    echo
+    echo "Testing both hypermethylated and hypomethylated DMRs"
+
+    mkdir -p both
+
+    findMotifsGenome.pl \
+        DMRs.bed \
+        "${genome}" \
+        both/ \
+        -bg background.bed \
+        -cpg \
+        -size given \
+        -p "${cores}" \
+        -nomotif
+
+
+    echo
+    echo "Testing hypermethylated DMRs"
+
+    mkdir -p hyper
+
+    findMotifsGenome.pl \
+        DMRs_hyper.bed \
+        "${genome}" \
+        hyper/ \
+        -bg background.bed \
+        -cpg \
+        -size given \
+        -p "${cores}" \
+        -nomotif
+
+
+    echo
+    echo "Testing hypomethylated DMRs"
+
+    mkdir -p hypo
+
+    findMotifsGenome.pl \
+        DMRs_hypo.bed \
+        "${genome}" \
+        hypo/ \
+        -bg background.bed \
+        -cpg \
+        -size given \
+        -p "${cores}" \
+        -nomotif
+}
+
+
+homerDMR \
     mm39 \
     "$SLURM_CPUS_PER_TASK" \
     "$WORKDIR"
+
+
+echo "Finished HOMER at $(date)"
